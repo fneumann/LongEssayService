@@ -1,0 +1,19 @@
+{
+  "name": "edutiek/long-essay-service",
+  "description": "backend lib for the long-essay-writer and long-essay-corrector",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Fred Neumann",
+      "email": "neumann@ilias.de"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Edutiek\\LongEssayService\\": "src"
+    }
+  },
+  "require": {
+  }
+}
