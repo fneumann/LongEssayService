@@ -1,7 +1,7 @@
 {
   "name": "edutiek/long-essay-service",
   "description": "Backend service for writing long essays",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
