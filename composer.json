@@ -13,14 +13,5 @@
     "psr-4": {
       "Edutiek\\LongEssayService\\": "src"
     }
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/fneumann/LongEssayWriter"
-    }
-  ],
-  "require": {
-    "edutiek/long-essay-writer": "dev-main"
   }
 }
