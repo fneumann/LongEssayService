@@ -17,7 +17,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/fneumann/LongEssayWriter.git"
+      "url": "https://github.com/fneumann/LongEssayWriter"
     }
   ],
   "require": {
