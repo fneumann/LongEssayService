@@ -5,6 +5,11 @@ namespace Edutiek\LongEssayService\Writer;
 class Service
 {
     /**
+     * @var Context
+     */
+    protected $context;
+
+    /**
      * Service constructor.
      * A class implementing the Context interface must be provided for the service
      *
@@ -12,6 +17,7 @@ class Service
      */
     public function __construct(Context $context)
     {
+        $this->context = $context;
     }
 
     /**
@@ -19,6 +25,7 @@ class Service
      */
     public function openFrontend()
     {
+        header('Location: ' . $this->context->getFrontendUrl());
     }
 
     /**

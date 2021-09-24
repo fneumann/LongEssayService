@@ -1,7 +1,7 @@
 {
   "name": "edutiek/long-essay-service",
-  "description": "backend lib for the long-essay-writer and long-essay-corrector",
-  "minimum-stability": "stable",
+  "description": "Backend service for writing long essays",
+  "minimum-stability": "dev",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
@@ -14,6 +14,13 @@
       "Edutiek\\LongEssayService\\": "src"
     }
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/fneumann/LongEssayWriter.git"
+    }
+  ],
   "require": {
+    "edutiek/long-essay-writer": "dev-main"
   }
 }
