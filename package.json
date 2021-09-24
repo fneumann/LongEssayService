@@ -1,0 +1,7 @@
+{
+  "name": "long-essay-service",
+  "version": "1.0.0",
+  "dependencies": {
+    "long-essay-writer": "git+https://github.com/fneumann/LongEssayWriter.git"
+  }
+}
