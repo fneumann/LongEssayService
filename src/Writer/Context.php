@@ -16,6 +16,9 @@ interface Context
      * Get the Url of the frontend
      * This URL should point to the index.html of the LongEssayWriter Web App
      * Parameters will be added by the writer service
+     * Standard is to use the base URL of the installed LongEssayService and add the FRONTEND_RELATIVE_PATH
+     * @see Service::FRONTEND_RELATIVE_PATH
+     *
      * @return string
      */
     public function getFrontendUrl(): string;
