@@ -13,5 +13,8 @@
     "psr-4": {
       "Edutiek\\LongEssayService\\": "src"
     }
+  },
+  "require": {
+    "slim/slim": "^3.11"
   }
 }
