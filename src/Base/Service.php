@@ -2,8 +2,9 @@
 
 namespace Edutiek\LongEssayService\Base;
 
-
 use Edutiek\LongEssayService\Data\ApiToken;
+use Edutiek\LongEssayService\Internal\Authentication;
+use Edutiek\LongEssayService\Internal\Dependencies;
 
 /**
  * Common API of the Writer and Corrector services
@@ -17,10 +18,8 @@ abstract class Service
     public const FRONTEND_RELATIVE_PATH = '';
 
 
-    /**
-     * @var Context
-     */
     protected $context;
+    protected Dependencies $dependencies;
 
     /**
      * Service constructor.
@@ -31,36 +30,30 @@ abstract class Service
     public function __construct(Context $context)
     {
         $this->context = $context;
+        $this->dependencies = new Dependencies();
     }
 
     /**
-     * Add the necessary parameters to the frontend URL and send a redirection to it
+     * Get the dependencies container
+     * @return Dependencies
+     */
+    protected function dic(): Dependencies
+    {
+        return $this->dependencies;
+    }
+
+    /**
+     * Add the necessary parameters for the frontend and send a redirection to it
      */
     public function openFrontend()
     {
-        // todo: move to a proper place
-        $value = sprintf('%04x%04x%04x%04x%04x%04x%04x%04x',
-            mt_rand(0, 65535),
-            mt_rand(0, 65535),
-            mt_rand(0, 65535),
-            mt_rand(16384, 20479),
-            mt_rand(32768, 49151),
-            mt_rand(0, 65535),
-            mt_rand(0, 65535),
-            mt_rand(0, 65535));
-
-        $ip_address = $_SERVER['REMOTE_ADDR'];
-
-        $expires = time() + $this->context->getDefaultTokenLifetime();
-
-        $token = new ApiToken($value, $ip_address, $expires);
+        $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
         $this->context->setApiToken($token);
 
-        // todo: look for longest common domain of current and frontend url
-        setcookie('edutiek_user', $this->context->getUserKey(),'/', '', false, false);
-        setcookie('edutiek_task', $this->context->getTaskKey(),'/', '', false, false);
-        setcookie('edutiek_backend', $this->context->getBackendUrl(),'/', '', false, false);
-        setcookie('edutiek_token', $token->getValue(), '/', '', false, false);
+        $this->setFrontendParam('user', $this->context->getUserKey());
+        $this->setFrontendParam('task', $this->context->getTaskKey());
+        $this->setFrontendParam('backend', $this->context->getBackendUrl());
+        $this->setFrontendParam('token', $token->getValue());
 
         header('Location: ' . $this->context->getFrontendUrl());
     }
@@ -78,19 +71,34 @@ abstract class Service
         $token_value = $body['edutiek_token'];
 
         $this->context->init($user_key, $task_key);
-
         $token = $this->context->getApiToken();
 
         if (!isset($token)) {
             // todo: respond unauthorized
         }
-        elseif ($token->getValue() != $token_value) {
-            // todo: respond token used by other instance
+        if ($this->dic()->auth()->isTokenWrong($token, $token_value)) {
+            // todo: respond wrong authorization
         }
-        elseif ($token->getExpires() < time()) {
-            // todo: respond authorization timed out
+        if ($this->dic()->auth()->isTokenExpired($token)) {
+            // todo: respond expired
         }
 
-        // todo: now handle the request
+        // todo: handle the request
+    }
+
+
+    /**
+     * Set a parameter for the frontend
+     *
+     * Parameters are sent as cookies over https
+     * They are only needed when the frontend is initialized and can expire afterwards (1 minute)
+     * They should be set for the whole server path to allow a different frontend locations during development
+     *
+     * @param $name
+     * @param $value
+     */
+    protected function setFrontendParam($name, $value)
+    {
+        setcookie('edutiek_' . $name, $value, 60, '/', '', false, false);
     }
 }
