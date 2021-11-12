@@ -16,18 +16,19 @@ class MyContext implements Context
 }
 ````
 
-Start the Writer frontend:
+### Start the Writer Frontend
+Inject the keys of the current user and task to the context before
 
 ````
- $context = new MyContext($user_key, $task_key);
- $service = new Service($context);
+ $context = new MyContext();
+ $service = new Service($context->init($user_key, $task_key));
  $service->openFrontend();
 ````
 
-Hand over REST calls from the frontend to the Writer:
-
+### Hand over REST calls from the Writer Frontend
+The keys of the current user and task will be injected by the service (taken from the request)
 ````
- $context = new MyContext($user_key, $task_key);
+ $context = new MyContext();
  $service = new Service($context);
  $service->handleRequest();
 ````
