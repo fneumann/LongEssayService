@@ -1,6 +1,7 @@
 <?php
 
 namespace Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Exceptions\ContextException;
 use Edutiek\LongEssayService\Data\ApiToken;
 
 /**
@@ -22,9 +23,10 @@ interface BaseContext
      *
      * @param string $user_key unique key of the current user
      * @param string $environment_key unique key of the current environment
-     * @return bool context could be initialized
+     * @return self
+     * @throws ContextException
      */
-    public function init(string $user_key, string $environment_key): bool;
+    public function init(string $user_key, string $environment_key): void;
 
 
     /**

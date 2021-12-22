@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Base;
 
+use Edutiek\LongEssayService\Exceptions\ContextException;
 use Edutiek\LongEssayService\Internal\Dependencies;
 use Slim\App;
 use Slim\Http\Request;
@@ -74,9 +75,27 @@ abstract class BaseRest extends App
         $env_key = (string) $this->params['edutiek_environment'];
         $token_value = (string) $this->params['edutiek_token'];
 
-
-        if (!$this->context->init($user_key, $env_key)) {
-            $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'context init failed');
+        try {
+            $this->context->init($user_key, $env_key);
+        }
+        catch (ContextException $e) {
+            switch ($e->getCode()) {
+                case ContextException::USER_NOT_VALID:
+                    $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, $e->getMessage());
+                    return false;
+                case ContextException::ENVIRONMENT_NOT_VALID:
+                    $this->setResponse(StatusCode::HTTP_BAD_REQUEST, $e->getMessage());
+                    return false;
+                case ContextException::PERMISSION_DENIED:
+                    $this->setResponse(StatusCode::HTTP_FORBIDDEN, $e->getMessage());
+                    return false;
+                default:
+                    $this->setResponse(StatusCode::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+                    return false;
+            }
+        }
+        catch (\Throwable $t) {
+            $this->setResponse(StatusCode::HTTP_BAD_REQUEST, $t->getMessage());
             return false;
         }
 
@@ -92,6 +111,7 @@ abstract class BaseRest extends App
         }
         if ($this->dic()->auth()->isTokenExpired($token)) {
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token is expired');
+            return false;
         }
 
         return true;

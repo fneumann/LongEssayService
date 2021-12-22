@@ -4,7 +4,7 @@ Public API of the _Long Essay Service_ to integrate the writer frontend in a PHP
 
 ## Usage
 
-The API is provided by a writer [Service](Service.php) object. The system that uses it must provide a context object that implements the [Context](Context.php) interface of this API.
+The API is provided by a writer [Service](Service.php) object. The system that uses it must provide a context object that implements the [Context](Context.php) interface of this API. 
 
 ````
 use Edutiek\LongEssayService\Writer\Context;
@@ -24,20 +24,20 @@ The writer service will call functions of the context object:
 * to save written texts
 * to set the writing as finished.
 
-Please note that the service class and the context interface of the writer are extensions. Functions that are commonly used by the writer and corrector APIs are defined in a  [BaseService](../Base/BaseService.php) class and [BaseContext](../Base/BaseContext.php) interface. Furthermore, this API uses data objects defined in the [Data](../Data/README.md) directory.
+Please note that the service class and the context interface of the writer are extensions. Functions that are commonly used by the writer and corrector APIs are defined in a  [BaseService](../Base/BaseService.php) class and [BaseContext](../Base/BaseContext.php) interface. Furthermore, this API uses data objects defined in the [Data](../Data/README.md) directory.  The provided context object should throw a [ContextException](../Exceptions/ContextException.php) in case of errors.
 
 The writer frontend is opened for a certain system _user_ and  _environment_, e.g. a specific essay that has to be written. They are identified by alphanumeric keys which are chosen by the system using the writer. The provided context object must implement an _init()_ function with these keys as parameters and all context functions that store and retrieve data are related to the initialized user and environment.
 
 ### Start the Frontend
 
-When the system wants to open the writer frontend for a writing task, the current user and environment are known. The system has to create its context object and initialize it with their keys. Then the service object can be created with this context.
+When the system wants to open the writer frontend for a writing task, the current user and environment are known. The system has to create its context object and initialize it with their keys. Then the service object can be created with this context. 
 
 ````
  $context = new MyContext();
- if ($context->init($user_key, $environment_key)) {
-    $service = new Service($context);
-    $service->openFrontend();
- }
+ $context->init($user_key, $environment_key);
+ 
+ $service = new Service($context);
+ $service->openFrontend();
 ````
 
 The _openFrontend()_ function of the service will generate a new [ApiToken](../Data/ApiToken.php) and call _setApiToken()_ of the context to store it in the system. Then it redirects to the page given by the context function _getFrontendUrl()_. The service constant FRONTEND_RELATIVE_PATH helps to build that url.

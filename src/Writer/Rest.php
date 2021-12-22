@@ -23,7 +23,7 @@ class Rest extends Base\BaseRest
     public function init(BaseContext $context, Dependencies $dependencies)
     {
         parent::init($context, $dependencies);
-        $this->get('/', [$this,'getSettings']);
+        $this->get('/settings', [$this,'getSettings']);
     }
 
 

@@ -52,7 +52,7 @@ class Authentication
      */
     public function isTokenExpired(ApiToken $token): bool
     {
-        return $token->getExpires() > time();
+        return $token->getExpires() < time();
     }
 
 
