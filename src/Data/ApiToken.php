@@ -33,9 +33,9 @@ class ApiToken
         $this->expires = $expires;
     }
 
-    protected string $value;
-    protected string $ip_address;
-    protected int $expires;
+    protected $value;
+    protected $ip_address;
+    protected $expires;
 
 
     /**

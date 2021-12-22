@@ -4,7 +4,13 @@ namespace Edutiek\LongEssayService\Internal;
 
 class Dependencies
 {
-    protected ?Authentication $authentication;
+    /**
+     * @var Authentication
+     */
+    protected $authentication;
+
+
+
 
     /**
      * @return Authentication

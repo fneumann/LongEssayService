@@ -2,8 +2,6 @@
 
 namespace Edutiek\LongEssayService\Base;
 
-use Edutiek\LongEssayService\Data\ApiToken;
-use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
 
 /**
@@ -19,7 +17,9 @@ abstract class Service
 
 
     protected $context;
-    protected Dependencies $dependencies;
+
+    /** @var Dependencies $dependencies */
+    protected $dependencies;
 
     /**
      * Service constructor.
@@ -51,9 +51,12 @@ abstract class Service
         $this->context->setApiToken($token);
 
         $this->setFrontendParam('user', $this->context->getUserKey());
-        $this->setFrontendParam('task', $this->context->getTaskKey());
+        $this->setFrontendParam('environment', $this->context->getEnvironmentKey());
         $this->setFrontendParam('backend', $this->context->getBackendUrl());
         $this->setFrontendParam('token', $token->getValue());
+
+        // use this if browsers prevent cookies being saved for a redirection
+        //$this->redirectByHtml($this->context->getFrontendUrl());
 
         header('Location: ' . $this->context->getFrontendUrl());
     }
@@ -67,10 +70,10 @@ abstract class Service
         $body = json_decode('{}');
 
         $user_key = (string) $body['edutiek_user'];
-        $task_key = (string) $body['edutiek_task'];
+        $env_key = (string) $body['edutiek_environment'];
         $token_value = $body['edutiek_token'];
 
-        $this->context->init($user_key, $task_key);
+        $this->context->init($user_key, $env_key);
         $token = $this->context->getApiToken();
 
         if (!isset($token)) {
@@ -99,6 +102,35 @@ abstract class Service
      */
     protected function setFrontendParam($name, $value)
     {
-        setcookie('edutiek_' . $name, $value, 60, '/', '', false, false);
+        setcookie(
+            'edutiek_' . $name, $value, [
+                'expires' => time() + 60,
+                'path' => '/',
+                'domain' => '',
+                'secure' => true,
+                'httponly' => false,
+                'samesite' => 'Strict' // None, Lax
+            ]
+        );
+    }
+
+    /**
+     * Deliver a redirecting HTML page
+     * @param string $url
+     */
+    protected function redirectByHtml($url)
+    {
+        echo <<<END
+            <!DOCTYPE html>
+            <html>
+            <head>
+               <meta http-equiv="refresh" content="0; url=$url">
+            </head>
+            <body>
+               <a href="$url">Redirect to $url ...</a>
+            </body>
+            </html>'
+            END;
+        exit;
     }
 }
