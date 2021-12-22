@@ -9,7 +9,7 @@ use Edutiek\LongEssayService\Base;
  *
  * @package Edutiek\LongEssayService\Writer
  */
-interface Context extends Base\Context
+interface Context extends Base\BaseContext
 {
 
 }

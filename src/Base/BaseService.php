@@ -3,31 +3,32 @@
 namespace Edutiek\LongEssayService\Base;
 
 use Edutiek\LongEssayService\Internal\Dependencies;
+use Edutiek\LongEssayService\Writer\Rest;
 
 /**
  * Common API of the Writer and Corrector services
  * @package Edutiek\LongEssayService\Internal
  */
-abstract class Service
+abstract class BaseService
 {
     /**
      * @const Path of the frontend web app, relative to the service root directory, without starting slash
      */
     public const FRONTEND_RELATIVE_PATH = '';
 
-
+    /** @var BaseContext  */
     protected $context;
 
-    /** @var Dependencies $dependencies */
+    /** @var Dependencies */
     protected $dependencies;
 
     /**
      * Service constructor.
      * A class implementing the Context interface must be provided by the LMS for this service
      *
-     * @param Context $context
+     * @param BaseContext $context
      */
-    public function __construct(Context $context)
+    public function __construct(BaseContext $context)
     {
         $this->context = $context;
         $this->dependencies = new Dependencies();
@@ -62,32 +63,9 @@ abstract class Service
     }
 
     /**
-     * Handle a REST like request from the LongEssayWriter Web App
+     * Handle a REST like request from the Web App
      */
-    public function handleRequest()
-    {
-        // todo: get body from REST call
-        $body = json_decode('{}');
-
-        $user_key = (string) $body['edutiek_user'];
-        $env_key = (string) $body['edutiek_environment'];
-        $token_value = $body['edutiek_token'];
-
-        $this->context->init($user_key, $env_key);
-        $token = $this->context->getApiToken();
-
-        if (!isset($token)) {
-            // todo: respond unauthorized
-        }
-        if ($this->dic()->auth()->isTokenWrong($token, $token_value)) {
-            // todo: respond wrong authorization
-        }
-        if ($this->dic()->auth()->isTokenExpired($token)) {
-            // todo: respond expired
-        }
-
-        // todo: handle the request
-    }
+    abstract public function handleRequest();
 
 
     /**

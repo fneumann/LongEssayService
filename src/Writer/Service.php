@@ -7,16 +7,14 @@ use Edutiek\LongEssayService\Base;
  * API of the LongEssayService for an LMS related to the writing of essays
  * @package Edutiek\LongEssayService\Writer
  */
-class Service extends Base\Service
+class Service extends Base\BaseService
 {
     /**
      * @const Path of the frontend web app, relative to the service root directory, without starting slash
      */
     public const FRONTEND_RELATIVE_PATH = 'node_modules/long-essay-writer/dist/index.html';
 
-    /**
-     * @var Context
-     */
+    /** @var Context */
     protected $context;
 
     /**
@@ -29,4 +27,23 @@ class Service extends Base\Service
     {
         parent::__construct($context);
     }
+
+    /**
+     * Handle a REST like request from the LongEssayWriter Web App
+     * @throws \Throwable
+     */
+    public function handleRequest()
+    {
+        $server = new Rest(
+            [
+                'settings' => [
+                    'displayErrorDetails' => true
+                ]
+            ]
+        );
+
+        $server->init($this->context, $this->dependencies);
+        $server->run();
+    }
+
 }

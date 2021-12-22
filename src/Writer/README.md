@@ -24,7 +24,7 @@ The writer service will call functions of the context object:
 * to save written texts
 * to set the writing as finished.
 
-Please note that the service class and the context interface of the writer are extensions. Functions that are commonly used by the writer and corrector APIs are defined in a base [Service](../Base/Service.php) class and [Context](../Base/Context.php) interface. Furthermore this API uses data objects defined in the [Data](../Data/README.md) directory.
+Please note that the service class and the context interface of the writer are extensions. Functions that are commonly used by the writer and corrector APIs are defined in a  [BaseService](../Base/BaseService.php) class and [BaseContext](../Base/BaseContext.php) interface. Furthermore, this API uses data objects defined in the [Data](../Data/README.md) directory.
 
 The writer frontend is opened for a certain system _user_ and  _environment_, e.g. a specific essay that has to be written. They are identified by alphanumeric keys which are chosen by the system using the writer. The provided context object must implement an _init()_ function with these keys as parameters and all context functions that store and retrieve data are related to the initialized user and environment.
 

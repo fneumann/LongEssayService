@@ -10,8 +10,6 @@ class Dependencies
     protected $authentication;
 
 
-
-
     /**
      * @return Authentication
      */
