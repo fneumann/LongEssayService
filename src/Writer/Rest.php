@@ -44,6 +44,8 @@ class Rest extends Base\BaseRest
         $json = [
             'return_url' => $this->context->getReturnUrl()
         ];
+
+        $this->refreshToken();
         return $this->setResponse(StatusCode::HTTP_OK, $json);
     }
 }

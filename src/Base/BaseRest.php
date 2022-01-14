@@ -62,18 +62,20 @@ abstract class BaseRest extends App
         $this->args = $args;
         $this->params = $request->getParams();
 
-//        $authorization = $this->request->getHeaderLine('Authorization');
-//        if (substr($authorization, 0, 7) == 'Bearer ') {
-//            $token_value = substr($authorization, 7);
-//        }
-//        else {
-//            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing authorization header');
-//            return false;
-//        }
 
-        $user_key = (string) $this->params['edutiek_user'];
-        $env_key = (string) $this->params['edutiek_environment'];
-        $token_value = (string) $this->params['edutiek_token'];
+        $user_key = $this->request->getHeaderLine('LongEssayUser');
+        $env_key = $this->request->getHeaderLine('LongEssayEnvironment');
+        $token_value = $this->request->getHeaderLine('LongEssayToken');
+
+        if (empty($user_key)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing Long-Essay-User header');
+        }
+        if (empty($env_key)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing Long-Essay-Environment header');
+        }
+        if (empty($env_key)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing Long-Essay-Token header');
+        }
 
         try {
             $this->context->init($user_key, $env_key);
@@ -116,6 +118,17 @@ abstract class BaseRest extends App
 
         return true;
     }
+
+    /**
+     * Set a new token and add it as header
+     */
+    protected function refreshToken()
+    {
+        $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
+        $this->context->setApiToken($token);
+        $this->response = $this->response->withHeader('LongEssayToken', $token->getValue());
+    }
+
 
     /**
      * Modify the response

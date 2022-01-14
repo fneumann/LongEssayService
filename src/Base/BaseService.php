@@ -51,10 +51,10 @@ abstract class BaseService
         $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
         $this->context->setApiToken($token);
 
-        $this->setFrontendParam('user', $this->context->getUserKey());
-        $this->setFrontendParam('environment', $this->context->getEnvironmentKey());
-        $this->setFrontendParam('backend', $this->context->getBackendUrl());
-        $this->setFrontendParam('token', $token->getValue());
+        $this->setFrontendParam('User', $this->context->getUserKey());
+        $this->setFrontendParam('Environment', $this->context->getEnvironmentKey());
+        $this->setFrontendParam('Backend', $this->context->getBackendUrl());
+        $this->setFrontendParam('Token', $token->getValue());
 
         // use this if browsers prevent cookies being saved for a redirection
         //$this->redirectByHtml($this->context->getFrontendUrl());
@@ -81,7 +81,7 @@ abstract class BaseService
     protected function setFrontendParam($name, $value)
     {
         setcookie(
-            'edutiek_' . $name, $value, [
+            'LongEssay' . $name, $value, [
                 'expires' => time() + 60,
                 'path' => '/',
                 'domain' => '',
