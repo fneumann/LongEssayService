@@ -127,6 +127,8 @@ abstract class BaseRest extends App
         $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
         $this->context->setApiToken($token);
         $this->response = $this->response->withHeader('LongEssayToken', $token->getValue());
+
+
     }
 
 

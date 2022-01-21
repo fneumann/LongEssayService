@@ -51,9 +51,10 @@ abstract class BaseService
         $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
         $this->context->setApiToken($token);
 
+        $this->setFrontendParam('Backend', $this->context->getBackendUrl());
+        $this->setFrontendParam('Return', $this->context->getReturnUrl());
         $this->setFrontendParam('User', $this->context->getUserKey());
         $this->setFrontendParam('Environment', $this->context->getEnvironmentKey());
-        $this->setFrontendParam('Backend', $this->context->getBackendUrl());
         $this->setFrontendParam('Token', $token->getValue());
 
         // use this if browsers prevent cookies being saved for a redirection
@@ -87,7 +88,7 @@ abstract class BaseService
                 'domain' => '',
                 'secure' => true,
                 'httponly' => false,
-                'samesite' => 'Strict' // None, Lax
+                'samesite' => 'Lax' // None, Lax
             ]
         );
     }

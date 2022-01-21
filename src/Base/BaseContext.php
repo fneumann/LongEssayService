@@ -6,7 +6,7 @@ use Edutiek\LongEssayService\Data\ApiToken;
 
 /**
  * Common interface for Writer and Corrector contexts
- * The context is always bound to a current user and writing task
+ * The context is always bound to a current user and an environment (e.g. a writing task)
  * Their keys have to be provided by init()
  */
 interface BaseContext
