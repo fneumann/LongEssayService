@@ -142,6 +142,8 @@ abstract class BaseRest extends App
     {
         return $this->response = $this->response
             ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Vary', 'Origin')
             ->withStatus($status)
             ->withJson($json);
     }

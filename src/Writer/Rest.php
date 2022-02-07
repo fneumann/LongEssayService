@@ -23,7 +23,7 @@ class Rest extends Base\BaseRest
     public function init(BaseContext $context, Dependencies $dependencies)
     {
         parent::init($context, $dependencies);
-        $this->get('/settings', [$this,'getSettings']);
+        $this->get('/', [$this,'getSettings']);
     }
 
 
@@ -42,7 +42,9 @@ class Rest extends Base\BaseRest
         }
 
         $json = [
-            'return_url' => $this->context->getReturnUrl()
+            'task' => [
+                'instructions'=>  'instructions from ilias'
+            ]
         ];
 
         $this->refreshToken();
