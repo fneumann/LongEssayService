@@ -39,7 +39,7 @@ class ApiToken
 
 
     /**
-     * @return string
+     * Token value
      */
     public function getValue(): string
     {
@@ -48,7 +48,7 @@ class ApiToken
 
 
     /**
-     * @return string
+     * IP Address for which the token is valid
      */
     public function getIpAddress(): string
     {
@@ -57,7 +57,7 @@ class ApiToken
 
 
     /**
-     * @return int
+     * Unix timestamp when the token expires
      */
     public function getExpires(): int
     {

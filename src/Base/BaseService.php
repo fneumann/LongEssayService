@@ -88,13 +88,14 @@ abstract class BaseService
                 'domain' => '',
                 'secure' => true,
                 'httponly' => false,
-                'samesite' => 'Lax' // None, Lax
+                'samesite' => 'Strict' // None, Lax, Strict
             ]
         );
     }
 
     /**
      * Deliver a redirecting HTML page
+     * use this if browsers prevent cookies being saved for a redirection
      * @param string $url
      */
     protected function redirectByHtml($url)

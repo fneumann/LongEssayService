@@ -23,7 +23,7 @@ class Rest extends Base\BaseRest
     public function init(BaseContext $context, Dependencies $dependencies)
     {
         parent::init($context, $dependencies);
-        $this->get('/', [$this,'getSettings']);
+        $this->get('/data', [$this,'getData']);
     }
 
 
@@ -34,16 +34,19 @@ class Rest extends Base\BaseRest
      * @param array $args
      * @return Response
      */
-    public function getSettings(Request $request, Response $response, array $args): Response
+    public function getData(Request $request, Response $response, array $args): Response
     {
         // common checks and initializations
         if (!$this->prepare($request, $response, $args)) {
             return $this->response;
         }
 
+        $task = $this->context->getWritingTask();
+
         $json = [
             'task' => [
-                'instructions'=>  'instructions from ilias'
+                'instructions' => $task->getInstructions(),
+                'writing_end' => $task->getWritingEnd()
             ]
         ];
 
