@@ -3,7 +3,6 @@
   "description": "Backend service for writing long essays",
   "minimum-stability": "dev",
   "license": "GPL-3.0-or-later",
-  "version": "0.1.0",
   "authors": [
     {
       "name": "Fred Neumann",
@@ -17,7 +16,7 @@
   },
   "require": {
     "php": ">=7.3 <8.1",
-    "ext-json": "",
+    "ext-json": "*",
     "slim/slim": "^3.11"
   }
 }
