@@ -45,7 +45,9 @@ class Rest extends Base\BaseRest
 
         $json = [
             'task' => [
+                'title' => $task->getTitle(),
                 'instructions' => $task->getInstructions(),
+                'writer_name' => $task->getWriterName(),
                 'writing_end' => $task->getWritingEnd()
             ]
         ];
