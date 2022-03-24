@@ -88,7 +88,7 @@ abstract class BaseService
                 'domain' => '',
                 'secure' => true,
                 'httponly' => false,
-                'samesite' => 'Strict' // None, Lax, Strict
+                'sameSite' => 'Strict' // None, Lax, Strict
             ]
         );
     }
