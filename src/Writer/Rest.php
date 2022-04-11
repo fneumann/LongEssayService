@@ -24,6 +24,7 @@ class Rest extends Base\BaseRest
     {
         parent::init($context, $dependencies);
         $this->get('/data', [$this,'getData']);
+
     }
 
 

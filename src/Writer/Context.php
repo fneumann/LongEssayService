@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Writer;
 use Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\WritingStep;
 use Edutiek\LongEssayService\Data\WritingTask;
 
 /**
@@ -18,4 +19,40 @@ interface Context extends Base\BaseContext
      * The writing end will limit the time for writing
      */
     public function getWritingTask(): WritingTask;
+
+    /**
+     * Get the written essay text that is currently saved
+     */
+    public function getWrittenText(): string;
+
+    /**
+     * Get the hash value of the written text (hashing is done by the service and saved with the text)
+     */
+    public function getWrittenHash(): string;
+
+    /**
+     * Set and save the written text with its hash value
+     */
+    public function setWrittenText(string $text, string $hash): void;
+
+    /**
+     * Get the writing steps that lead to the written text
+     * This may return an empty array if the context does not provide a writing history
+     *
+     * - steps must be returned in their saving order
+     * - the hash before each step must be equal to the hash after the previous step
+     * - The resulting content after the last save must be equal to getWrittenText()
+     * - The hash after the last step must be equal to getWrittenHash()
+     *
+     * @param ?int $maximum Maximum number of provided steps (from the end). Get all steps, if not set
+     * @return WritingStep[]
+     */
+    public function getWritingSteps(?int $maximum): array;
+
+    /**
+     * Add writing steps to the history
+     * This may be ignored if the context does not provide a writing history
+     * @param WritingStep[] $steps
+     */
+    public function addWritingSteps(array $steps);
 }
