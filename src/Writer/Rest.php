@@ -111,7 +111,8 @@ class Rest extends Base\BaseRest
 
             if ($step->isDelta()) {
                 $patches = $dmp->patch_fromText($step->getContent());
-                $currentText = $dmp->patch_apply($patches, $currentText);
+                $result =  $dmp->patch_apply($patches, $currentText);
+                $currentText = $result[0];
             }
             else {
                 $currentText = $step->getContent();
