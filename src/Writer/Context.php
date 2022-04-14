@@ -55,4 +55,12 @@ interface Context extends Base\BaseContext
      * @param WritingStep[] $steps
      */
     public function addWritingSteps(array $steps);
+
+
+    /**
+     * Check if a writing step with a hash after application already exists
+     * This is used to ensure a correct sequence of writing steps
+     * Note: the hash is a combination of the resulting text and the timestamp and therefore unique
+     */
+    public function hasWritingStepByHashAfter(string $hash_after): bool;
 }

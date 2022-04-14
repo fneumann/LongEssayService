@@ -47,15 +47,18 @@ class Rest extends Base\BaseRest
         $task = $this->context->getWritingTask();
 
         $steps = [];
-        foreach ($this->context->getWritingSteps(50) as $step) {
-            $steps[] = [
-              'timestamp' => $step->getTimestamp(),
-              'content' => $step->getContent(),
-              'is_delta' => $step->isDelta(),
-              'hash_before' => $step->getHashBefore(),
-              'hash_after' => $step->getHashAfter()
-            ];
-        }
+        // send all steps if undo should be based on them
+        // then each step would need a revert diff
+        // currently undo from tiny is used - no need to send the steps
+//        foreach ($this->context->getWritingSteps(null) as $step) {
+//            $steps[] = [
+//              'timestamp' => $step->getTimestamp(),
+//              'content' => $step->getContent(),
+//              'is_delta' => $step->isDelta(),
+//              'hash_before' => $step->getHashBefore(),
+//              'hash_after' => $step->getHashAfter()
+//            ];
+//        }
 
         $json = [
             'task' => [
@@ -107,6 +110,24 @@ class Rest extends Base\BaseRest
                 $entry['hash_before'],
                 $entry['hash_after']
             );
+
+            // check if step can be added
+            // fault tolerance if a former put was partially applied or the response to the app was lost
+            // then this list may include steps that are already saved
+            // exclude these steps because they will corrupt the sequence
+            // later steps may fit again
+            if ($step->getHashBefore() !== $currentHash) {
+                if ($step->isDelta()) {
+                    // don't add a delta step that can't be applied
+                    // step may already be saved, so a later new step may fit
+                    continue;
+                }
+                elseif ($this->context->hasWritingStepByHashAfter($step->getHashAfter())) {
+                    // the same full save should not be saved twice
+                    // note: hash_after is salted by timestamp and is unique
+                    continue;
+                }
+            }
             $steps[] = $step;
 
             if ($step->isDelta()) {
