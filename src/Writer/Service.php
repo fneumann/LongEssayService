@@ -46,4 +46,15 @@ class Service extends Base\BaseService
         $server->run();
     }
 
+    /**
+     * Process the written text for being used in the corrector
+     */
+    public function processWrittenText()
+    {
+        $text = $this->context->getWrittenText();
+        $text = $this->dic()->html()->cleanupWriterInput($text);
+        $text = $this->dic()->html()->addParagraphNumbers($text);
+        $this->context->setProcessedText($text);
+    }
+
 }

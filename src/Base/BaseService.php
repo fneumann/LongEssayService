@@ -3,6 +3,7 @@
 namespace Edutiek\LongEssayService\Base;
 
 use Edutiek\LongEssayService\Internal\Dependencies;
+use Edutiek\LongEssayService\Tools\HtmlProcessing;
 use Edutiek\LongEssayService\Writer\Rest;
 
 /**

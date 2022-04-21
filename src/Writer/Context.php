@@ -48,7 +48,6 @@ interface Context extends Base\BaseContext
      * @return WritingStep[]
      */
     public function getWritingSteps(?int $maximum): array;
-
     /**
      * Add writing steps to the history
      * This may be ignored if the context does not provide a writing history
@@ -63,4 +62,10 @@ interface Context extends Base\BaseContext
      * Note: the hash is a combination of the resulting text and the timestamp and therefore unique
      */
     public function hasWritingStepByHashAfter(string $hash_after): bool;
+
+
+    /**
+     * Set the text that has been processed for use in the corrector app
+     */
+    public function setProcessedText(string $text): void;
 }

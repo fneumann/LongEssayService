@@ -9,6 +9,10 @@ class Dependencies
      */
     protected $authentication;
 
+    /**
+     * @var HtmlProcessing
+     */
+    protected $htmlProcessing;
 
     /**
      * @return Authentication
@@ -21,5 +25,15 @@ class Dependencies
         return $this->authentication;
     }
 
+    /**
+     * @return HtmlProcessing
+     */
+    public function html() : HtmlProcessing
+    {
+        if (!isset($this->htmlProcessing)) {
+            $this->htmlProcessing = new HtmlProcessing();
+        }
 
+        return $this->htmlProcessing;
+    }
 }
