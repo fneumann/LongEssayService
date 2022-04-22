@@ -16,7 +16,7 @@ class HtmlProcessing
      */
     public function cleanupWriterInput(string $html) : string
     {
-        return $this->processXslt($html, __DIR__ . '/cleanup.xsl');
+        return $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
     }
 
     /**
@@ -26,7 +26,7 @@ class HtmlProcessing
      */
     public function addParagraphNumbers(string $html) : string
     {
-        return $this->processXslt($html, __DIR__ . '/numbers.xsl');
+        return $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
     }
 
     /**

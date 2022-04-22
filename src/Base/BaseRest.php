@@ -39,14 +39,6 @@ abstract class BaseRest extends App
         $this->dependencies = $dependencies;
     }
 
-    /**
-     * Get the dependencies container
-     * @return Dependencies
-     */
-    protected function dic(): Dependencies
-    {
-        return $this->dependencies;
-    }
 
     /**
      * Prepare the request processing (access check, init of properties)
@@ -107,11 +99,11 @@ abstract class BaseRest extends App
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token is not found');
             return false;
         }
-        if ($this->dic()->auth()->isTokenWrong($token, $token_value)) {
+        if ($this->dependencies->auth()->isTokenWrong($token, $token_value)) {
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token value is wrong');
             return false;
         }
-        if ($this->dic()->auth()->isTokenExpired($token)) {
+        if ($this->dependencies->auth()->isTokenExpired($token)) {
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token is expired');
             return false;
         }
@@ -124,7 +116,7 @@ abstract class BaseRest extends App
      */
     protected function refreshToken()
     {
-        $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
+        $token = $this->dependencies->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
         $this->context->setApiToken($token);
         $this->response = $this->response->withHeader('LongEssayToken', $token->getValue());
     }

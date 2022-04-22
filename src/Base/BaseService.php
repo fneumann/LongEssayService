@@ -35,21 +35,13 @@ abstract class BaseService
         $this->dependencies = new Dependencies();
     }
 
-    /**
-     * Get the dependencies container
-     * @return Dependencies
-     */
-    protected function dic(): Dependencies
-    {
-        return $this->dependencies;
-    }
 
     /**
      * Add the necessary parameters for the frontend and send a redirection to it
      */
     public function openFrontend()
     {
-        $token = $this->dic()->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
+        $token = $this->dependencies->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
         $this->context->setApiToken($token);
 
         $this->setFrontendParam('Backend', $this->context->getBackendUrl());

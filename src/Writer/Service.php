@@ -52,8 +52,8 @@ class Service extends Base\BaseService
     public function processWrittenText()
     {
         $text = $this->context->getWrittenText();
-        $text = $this->dic()->html()->cleanupWriterInput($text);
-        $text = $this->dic()->html()->addParagraphNumbers($text);
+        $text = $this->dependencies->html()->cleanupWriterInput($text);
+        $text = $this->dependencies->html()->addParagraphNumbers($text);
         $this->context->setProcessedText($text);
     }
 
