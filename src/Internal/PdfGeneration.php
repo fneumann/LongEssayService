@@ -2,76 +2,150 @@
 
 namespace Edutiek\LongEssayService\Internal;
 
-// Include the main TCPDF library.
-require_once(__DIR__ . '/../../vendor/tecnickcom/tcpdf/tcpdf.php');
-
-// Include the examples config
-require_once(__DIR__ . '../../vendor/tecnickcom/tcpdf/examples/config/tcpdf_config_alt.php');
-
 
 class PdfGeneration
 {
-    public function generatePdfFromHtml(string $html) : string
+    /**
+     * Page orientation (P=portrait, L=landscape).
+     */
+    protected $page_orientation = 'P';
+
+    /**
+     * Document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch].
+     */
+    protected  $pdf_unit = 'mm';
+
+    /**
+     * Page format.
+     */
+    protected $page_format = 'A4';
+
+
+    /**
+     * Main font name (helvetica, times, ...)
+     */
+    protected $main_font = 'times';
+
+    /**
+     * Size of the main text
+     */
+    protected $main_font_size = 14;
+
+    /**
+     * Font used in the header
+     */
+    protected $header_font = 'helvetica';
+
+
+    /**
+     * Size of the header text
+     */
+    protected $header_font_size = 12;
+
+    /**
+     * Font used in the footer
+     */
+    protected $footer_font = 'helvetica';
+
+    /**
+     * Size of the footer text
+     */
+    protected $footer_font_size = 10;
+
+    /**
+     * Font used fpr monospace text
+     */
+    protected $mono_font = 'courier';
+
+    /**
+     * Header margin.
+     */
+    protected $header_margin = 5;
+
+    /**
+     * Footer margin.
+     */
+    protected $footer_margin = 10;
+
+    /**
+     * Top margin.
+     */
+    protected $top_margin = 27;
+
+    /**
+     * Bottom margin.
+     */
+    protected $bottom_margin = 25;
+
+    /**
+     * Left margin.
+     */
+    protected $left_margin = 15;
+
+    /**
+     * Right margin.
+     */
+    protected $right_margin = 15;
+
+
+    /**
+     * Generate a pdf from an HTML text
+     *
+     * @param string $html          HTML code of the content
+     * @param string $creator       Name of the creator app, e.h. name of the LMS
+     * @param string $author
+     * @param string $title
+     * @param string $subject
+     * @param string $keywords
+     * @return string
+     */
+    public function generatePdfFromHtml(string $html, $creator = "", $author = "", $title = "", $subject = "", $keywords = "") : string
     {
         // create new PDF document
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, true);
+        // note the last parameter for PDF/A-1b (ISO 19005-1:2005)
+        $pdf = new \TCPDF($this->page_orientation, $this->pdf_unit, $this->page_format, true, 'UTF-8', false, true);
 
         // set document information
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Nicola Asuni');
-        $pdf->SetTitle('TCPDF Example 065');
-        $pdf->SetSubject('TCPDF Tutorial');
-        $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
+        $pdf->SetCreator($creator);
+        $pdf->SetAuthor($author);
+        $pdf->SetTitle($title);
+        $pdf->SetSubject($subject);
+        $pdf->SetKeywords($keywords);
 
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 065', PDF_HEADER_STRING);
+        $pdf->SetHeaderData('', 0, $title, $subject);
 
         // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont(Array($this->header_font, '', $this->header_font_size));
+        $pdf->setFooterFont(Array($this->footer_font, '', $this->footer_font_size));
 
         // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->SetDefaultMonospacedFont($this->mono_font);
 
         // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetMargins($this->left_margin, $this->top_margin, $this->right_margin);
+        $pdf->SetHeaderMargin($this->header_margin);
+        $pdf->SetFooterMargin($this->footer_margin);
 
         // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, $this->bottom_margin);
 
-        // set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// ---------------------------------------------------------
-
-// set default font subsetting mode
+        // set default font subsetting mode
         $pdf->setFontSubsetting(true);
 
-// Set font
-        $pdf->SetFont('helvetica', '', 14, '', true);
+        // Set font
+        $pdf->SetFont($this->main_font, '', $this->main_font_size, '', true);
 
-// Add a page
-// This method has several options, check the source code documentation for more information.
+        // Add a page
+        // This method has several options, check the source code documentation for more information.
         $pdf->AddPage();
 
-// Set some content to print
-        $html = <<<EOD
-<h1>Example of <a href="http://www.tcpdf.org" style="text-decoration:none;background-color:#CC0000;color:black;">&nbsp;<span style="color:black;">TC</span><span style="color:white;">PDF</span>&nbsp;</a> document in <span style="background-color:#99ccff;color:black;"> PDF/A-1b </span> mode.</h1>
-<i>This document conforms to the standard <b>PDF/A-1b (ISO 19005-1:2005)</b>.</i>
-<p>Please check the source code documentation and other examples for further information (<a href="http://www.tcpdf.org">http://www.tcpdf.org</a>).</p>
-<p style="color:#CC0000;">TO IMPROVE AND EXPAND TCPDF I NEED YOUR SUPPORT, PLEASE <a href="http://sourceforge.net/donate/index.php?group_id=128076">MAKE A DONATION!</a></p>
-EOD;
-
-// Print text using writeHTMLCell()
+        // Print text using writeHTMLCell()
         $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
 
-// ---------------------------------------------------------
 
-// Close and output PDF document
-// This method has several options, check the source code documentation for more information.
-        $pdf->Output('example_065.pdf', 'I');
-
+        // Close and output PDF document
+        // This method has several options, check the source code documentation for more information.
+        return $pdf->Output('dummy.pdf', 'S');
     }
 }

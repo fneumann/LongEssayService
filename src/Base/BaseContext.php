@@ -28,14 +28,32 @@ interface BaseContext
      */
     public function init(string $user_key, string $environment_key): void;
 
+    /**
+     * Get the name of the embedding system
+     * This will be included in generated PDFs
+     */
+    public function getSystemName(): string;
+
+    /**
+     *  Get the ISO 639-1 Language Code
+     *  This will be used for the writer and corrector GUI
+     *  Currently 'de' and 'en' are supported, all other default to 'en'
+     */
+    public function getLanguage(): string;
+
+
+    /**
+     * Get the timezone identifier, e.g. 'Europe/Berlin'
+     * This will be used for date and time display
+     */
+    public function getTimezone(): string;
+
 
     /**
      * Get the Url of the frontend
      * This URL should point to the index.html of the frontend
      * Standard is to use the base URL of the installed LongEssayService and add the FRONTEND_RELATIVE_PATH
      * @see Service::FRONTEND_RELATIVE_PATH
-     *
-     * @return string
      */
     public function getFrontendUrl(): string;
 
@@ -44,30 +62,24 @@ interface BaseContext
      * Get the URL of the backend
      * This URL of the system will get REST requests from the frontend
      * The system should then hand over the request to the service
-     *
-     * @return string
      */
     public function getBackendUrl(): string;
 
     /**
      * Get the return url of the system
      * This URL of the system will be called when the frontend is closed
-     *
-     * @return string
      */
     public function getReturnUrl(): string;
 
 
     /**
      * Get the identifying key of the current user
-     * @return string
      */
     public function getUserKey(): string;
 
 
     /**
      * Get the identifying key of the current environment
-     * @return string
      */
     public function getEnvironmentKey(): string;
 
@@ -76,8 +88,6 @@ interface BaseContext
      * Get the default lifetime of an API token in seconds
      * A token will be refreshed with every REST call
      * If no call is given, an existing token will expire in this time after creation
-     *
-     * @return int
      */
     public function getDefaultTokenLifetime(): int;
 
@@ -86,8 +96,6 @@ interface BaseContext
      * Get the api token for the context
      * This is used for the authorization of REST calls
      * Only one valid token should exist for the current user and task
-     *
-     * @return ApiToken|null
      */
     public function getApiToken(): ?ApiToken;
 
@@ -97,7 +105,6 @@ interface BaseContext
      * This is used when a frontend is opened
      * It should overwrite an existing api token of the current user and task
      * This will make REST calls from already opened frontends for the same context invalid
-     * @param ApiToken $api_token
      */
     public function setApiToken(ApiToken $api_token);
 

@@ -48,13 +48,33 @@ class Service extends Base\BaseService
 
     /**
      * Process the written text for being used in the corrector
+     * - Cleanup unsupported html
+     * - Add paragraph numbering
      */
     public function processWrittenText()
     {
-        $text = $this->context->getWrittenText();
-        $text = $this->dependencies->html()->cleanupWriterInput($text);
-        $text = $this->dependencies->html()->addParagraphNumbers($text);
-        $this->context->setProcessedText($text);
+        $essay = $this->context->getWrittenEssay();
+        if (isset($essay)) {
+            $this->context->setWrittenEssay(
+                $essay->withProcessedText($this->dependencies->html()->processWrittenText((string) $essay->getWrittenText()))
+            );
+        }
     }
 
+    /**
+     * Get a pdf from the text that has been processed for the corrector
+     */
+    public function getProcessedTextAsPdf() : string
+    {
+        $task = $this->context->getWritingTask();
+        $essay = $this->context->getWrittenEssay();
+
+        return $this->dependencies->pdfGeneration()->generatePdfFromHtml(
+            $essay->getProcessedText(),
+            $this->context->getSystemName(),
+            $task->getWriterName(),
+            $task->getTitle(),
+            $task->getWriterName() . ' ' . $this->formatDates($essay->getEditStarted(), $essay->getEditEnded())
+        );
+    }
 }

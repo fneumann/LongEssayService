@@ -45,6 +45,7 @@ class Rest extends Base\BaseRest
         }
 
         $task = $this->context->getWritingTask();
+        $essay = $this->context->getWrittenEssay();
 
         $steps = [];
         // send all steps if undo should be based on them
@@ -68,8 +69,9 @@ class Rest extends Base\BaseRest
                 'writing_end' => $task->getWritingEnd()
             ],
             'essay' => [
-                'content' => $this->context->getWrittenText(),
-                'hash' => $this->context->getWrittenHash(),
+                'content' => $essay->getWrittenText(),
+                'hash' => $essay->getWrittenHash(),
+                'started' => $essay->getEditStarted(),
                 'steps' => $steps
             ]
         ];
@@ -98,8 +100,10 @@ class Rest extends Base\BaseRest
         }
 
         $dmp = new DiffMatchPatch();
-        $currentText = $this->context->getWrittenText();
-        $currentHash = $this->context->getWrittenHash();
+
+        $essay = $this->context->getWrittenEssay();
+        $currentText = $essay->getWrittenText();
+        $currentHash = $essay->getWrittenHash();
 
         $steps = [];
         foreach($data['steps'] as $entry) {
@@ -141,8 +145,14 @@ class Rest extends Base\BaseRest
             $currentHash = $step->getHashAfter();
         }
 
-        $this->context->setWrittenText($currentText, $currentHash);
+
+        // save the data
         $this->context->addWritingSteps($steps);
+        $this->context->setWrittenEssay($essay
+            ->withWrittenText($currentText)
+            ->withWrittenHash($currentHash)
+            ->withProcessedText($this->dependencies->html()->processWrittenText($currentText))
+        );
 
         $this->refreshToken();
         return $this->setResponse(StatusCode::HTTP_OK);

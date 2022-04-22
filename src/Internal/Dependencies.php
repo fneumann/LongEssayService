@@ -4,18 +4,18 @@ namespace Edutiek\LongEssayService\Internal;
 
 class Dependencies
 {
-    /**
-     * @var Authentication
-     */
+    /** @var Authentication */
     protected $authentication;
 
-    /**
-     * @var HtmlProcessing
-     */
+    /** @var HtmlProcessing */
     protected $htmlProcessing;
 
+    /** @var PdfGeneration */
+    protected $pdfGeneration;
+
+
     /**
-     * @return Authentication
+     * Get the object for authentication
      */
     public function auth() : Authentication
     {
@@ -26,7 +26,7 @@ class Dependencies
     }
 
     /**
-     * @return HtmlProcessing
+     * Get the object for HMTL processing
      */
     public function html() : HtmlProcessing
     {
@@ -36,4 +36,16 @@ class Dependencies
 
         return $this->htmlProcessing;
     }
+
+    /**
+     * Get the object for PDG generation
+     */
+    public function pdfGeneration() : PdfGeneration
+    {
+        if (!isset($this->pdfGeneration)) {
+            $this->pdfGeneration = new PdfGeneration();
+        }
+        return $this->pdfGeneration;
+    }
+
 }

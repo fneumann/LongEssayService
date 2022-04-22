@@ -10,11 +10,23 @@ class HtmlProcessing
     static $counter = 1;
 
     /**
+     * Process a html text from the writer for the corrector
+     */
+    public function processWrittenText(string $html) : string
+    {
+        $html = $this->cleanupWriterInput($html);
+        $html = $this->addParagraphNumbers($html);
+
+        return $html;
+    }
+
+
+    /**
      * Prepare a raw input coming from the writer for further processing
      * @param string $html
      * @return string
      */
-    public function cleanupWriterInput(string $html) : string
+    protected function cleanupWriterInput(string $html) : string
     {
         return $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
     }
@@ -24,7 +36,7 @@ class HtmlProcessing
      * @param string $html
      * @return string
      */
-    public function addParagraphNumbers(string $html) : string
+    protected function addParagraphNumbers(string $html) : string
     {
         return $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
     }

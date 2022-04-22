@@ -106,4 +106,28 @@ abstract class BaseService
             END;
         exit;
     }
+
+    /**
+     * Format a date or a timespan given by unix timestamps in the context timezone
+     */
+    protected function formatDates(?int $start = null, ?int $end = null) : string
+    {
+        $parts = [];
+        foreach ([$start, $end] as $date) {
+            if (!empty($date)) {
+                $date = (new \DateTimeImmutable())
+                    ->setTimezone(new \DateTimeZone($this->context->getTimezone()))
+                    ->setTimestamp($start);
+
+                if ($this->context->getLanguage() == 'de') {
+                    $parts[] = $date->format('d.m.Y H:i:s');
+                }
+                else {
+                    $parts[] = $date->format('Y-m-d H:i:s');
+                }
+            }
+        }
+
+        return implode(' - ', $parts);
+    }
 }
