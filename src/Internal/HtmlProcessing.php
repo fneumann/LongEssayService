@@ -10,36 +10,27 @@ class HtmlProcessing
     static $counter = 1;
 
     /**
-     * Process a html text from the writer for the corrector
+     * Process the written text for display in the browser
      */
-    public function processWrittenText(string $html) : string
+    public function processWrittenTextForDisplay($html) : string
     {
-        $html = $this->cleanupWriterInput($html);
-        $html = $this->addParagraphNumbers($html);
+        $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
+        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
 
         return $html;
     }
 
-
     /**
-     * Prepare a raw input coming from the writer for further processing
-     * @param string $html
-     * @return string
+     * Process the written text for PDF generation
      */
-    protected function cleanupWriterInput(string $html) : string
+    public function processWrittenTextForPdf($html) : string
     {
-        return $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
+        $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
+        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
+
+        return $html;
     }
 
-    /**
-     * Add numbers to the paragraphs
-     * @param string $html
-     * @return string
-     */
-    protected function addParagraphNumbers(string $html) : string
-    {
-        return $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
-    }
 
     /**
      * Get the XSLt Processor for an XSL file

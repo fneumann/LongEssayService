@@ -56,7 +56,7 @@ class Service extends Base\BaseService
         $essay = $this->context->getWrittenEssay();
         if (isset($essay)) {
             $this->context->setWrittenEssay(
-                $essay->withProcessedText($this->dependencies->html()->processWrittenText((string) $essay->getWrittenText()))
+                $essay->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay((string) $essay->getWrittenText()))
             );
         }
     }
@@ -70,7 +70,7 @@ class Service extends Base\BaseService
         $essay = $this->context->getWrittenEssay();
 
         return $this->dependencies->pdfGeneration()->generatePdfFromHtml(
-            $essay->getProcessedText(),
+            $this->dependencies->html()->processWrittenTextForPdf($essay->getWrittenText()),
             $this->context->getSystemName(),
             $task->getWriterName(),
             $task->getTitle(),

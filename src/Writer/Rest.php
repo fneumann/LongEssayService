@@ -151,7 +151,7 @@ class Rest extends Base\BaseRest
         $this->context->setWrittenEssay($essay
             ->withWrittenText($currentText)
             ->withWrittenHash($currentHash)
-            ->withProcessedText($this->dependencies->html()->processWrittenText($currentText))
+            ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay($currentText))
         );
 
         $this->refreshToken();
