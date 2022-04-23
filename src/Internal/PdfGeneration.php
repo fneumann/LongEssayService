@@ -90,6 +90,9 @@ class PdfGeneration
 
     /**
      * Generate a pdf from an HTML text
+     * Compliance with PDF/A-2B shall be achieved
+     * @see https://de.wikipedia.org/wiki/PDF/A
+     * @see
      *
      * @param string $html          HTML code of the content
      * @param string $creator       Name of the creator app, e.h. name of the LMS
@@ -102,8 +105,8 @@ class PdfGeneration
     public function generatePdfFromHtml(string $html, $creator = "", $author = "", $title = "", $subject = "", $keywords = "") : string
     {
         // create new PDF document
-        // note the last parameter for PDF/A-1b (ISO 19005-1:2005)
-        $pdf = new \TCPDF($this->page_orientation, $this->pdf_unit, $this->page_format, true, 'UTF-8', false, true);
+        // note the last parameter for compliance with PDF/A-2B
+        $pdf = new \TCPDF($this->page_orientation, $this->pdf_unit, $this->page_format, true, 'UTF-8', false, 2);
 
         // set document information
         $pdf->SetCreator($creator);
@@ -111,6 +114,8 @@ class PdfGeneration
         $pdf->SetTitle($title);
         $pdf->SetSubject($subject);
         $pdf->SetKeywords($keywords);
+
+        $pdf->SetAlpha(1);
 
         // set default header data
         $pdf->SetHeaderData('', 0, $title, $subject);
@@ -136,13 +141,16 @@ class PdfGeneration
         // Set font
         $pdf->SetFont($this->main_font, '', $this->main_font_size, '', true);
 
+
         // Add a page
         // This method has several options, check the source code documentation for more information.
         $pdf->AddPage();
 
-        // Print text using writeHTMLCell()
-        $pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
 
+
+        // Print text using writeHTMLCell()
+        //$pdf->writeHTMLCell(0, 0, '', '', $html, 0, 1, 0, true, '', true);
+        $pdf->writeHtml($html, false, true);
 
         // Close and output PDF document
         // This method has several options, check the source code documentation for more information.
