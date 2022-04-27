@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Writer;
 use Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\WritingSettings;
 use Edutiek\LongEssayService\Data\WritingStep;
 use Edutiek\LongEssayService\Data\WritingTask;
 use Edutiek\LongEssayService\Data\WrittenEssay;
@@ -14,6 +15,12 @@ use Edutiek\LongEssayService\Data\WrittenEssay;
  */
 interface Context extends Base\BaseContext
 {
+    /**
+     * Get the settings to be used for the editor
+     * e.g. the headline scheme or formatting options
+     */
+    public function getWritingSettings(): WritingSettings;
+
     /**
      * Get the Task that should be done in the editor
      * The instructions of this task will be shown to the student when the writer is opened

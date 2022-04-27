@@ -44,6 +44,7 @@ class Rest extends Base\BaseRest
             return $this->response;
         }
 
+        $settings = $this->context->getWritingSettings();
         $task = $this->context->getWritingTask();
         $essay = $this->context->getWrittenEssay();
 
@@ -62,6 +63,12 @@ class Rest extends Base\BaseRest
 //        }
 
         $json = [
+            'settings' => [
+                'headline_scheme' => $settings->getHeadlineScheme(),
+                'formatting_options' => $settings->getFormattingOptions(),
+                'notice_boards' => $settings->getNoticeBoards(),
+                'copy_allowed' => $settings->isCopyAllowed()
+            ],
             'task' => [
                 'title' => $task->getTitle(),
                 'instructions' => $task->getInstructions(),
@@ -73,7 +80,7 @@ class Rest extends Base\BaseRest
                 'hash' => $essay->getWrittenHash(),
                 'started' => $essay->getEditStarted(),
                 'steps' => $steps
-            ]
+            ],
         ];
 
         $this->refreshToken();
