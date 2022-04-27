@@ -14,36 +14,31 @@
     </xsl:template>
 
     <xsl:template match="body">
-        <style>
-            .long-essay-block {
-                margin-left: 50px;
-            }
-
-            .long-essay-block::before {
-                content: attr(long-essay-number);
-                position: fixed;
-                left: 0;
-                font-family: monospace;
-                font-size: 15px;
-                white-space: pre;
-            }
-        </style>
-        <xsl:apply-templates select="node()" />
+        <table>
+            <xsl:apply-templates select="node()" />
+        </table>
     </xsl:template>
 
 
     <!--  Add numbers to the paragraph like elements -->
-    <xsl:template match="h1|h2|h3|h4|h5|h6|p|li">
+    <xsl:template match="h1|h2|h3|h4|h5|h6|p|ul|ol">
         <xsl:variable name="counter" select="php:function('Edutiek\LongEssayService\Internal\HtmlProcessing::nextCounter')" />
-
-        <xsl:copy>
-            <xsl:attribute name="class">long-essay-block</xsl:attribute>
-            <xsl:attribute name="long-essay-number">
+        <tr>
+            <td width="10%">
                 <xsl:value-of select="$counter" />
-            </xsl:attribute>
+             </td>
+            <td width="90%">
+                <xsl:copy>
+                    <xsl:attribute name="class">long-essay-block</xsl:attribute>
+                    <xsl:attribute name="long-essay-number">
+                        <xsl:value-of select="$counter" />
+                    </xsl:attribute>
 
-            <xsl:apply-templates select="node()" />
-        </xsl:copy>
+                    <xsl:apply-templates select="node()" />
+                </xsl:copy>
+            </td>
+        </tr>
+
     </xsl:template>
 
 

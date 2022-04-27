@@ -15,7 +15,7 @@ class HtmlProcessing
     public function processWrittenTextForDisplay($html) : string
     {
         $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
-        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
+        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers_display.xsl');
 
         return $html;
     }
@@ -26,7 +26,7 @@ class HtmlProcessing
     public function processWrittenTextForPdf($html) : string
     {
         $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
-        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers.xsl');
+        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers_pdf.xsl');
 
         return $html;
     }
