@@ -10,10 +10,16 @@
         <xsl:apply-templates select="*" />
     </xsl:template>
 
-
     <!-- copy only allowed elements, without attributes -->
     <xsl:template match="h1|h2|h3|h4|h5|h6|p|ul|ol|li|strong|em">
-        <xsl:copy><xsl:apply-templates select="node()" /></xsl:copy>
+        <xsl:if test="node()">
+            <xsl:copy><xsl:apply-templates select="node()" /></xsl:copy>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- copy only content -->
+    <xsl:template match="span">
+        <xsl:apply-templates select="node()" />
     </xsl:template>
 
 

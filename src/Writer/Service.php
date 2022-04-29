@@ -29,6 +29,17 @@ class Service extends Base\BaseService
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function setSpecificFrontendParams()
+    {
+        // add the hash of the current essay content
+        // this will be used to check if the writer content is outdated
+        $essay = $this->context->getWrittenEssay();
+        $this->setFrontendParam('Hash', (string) $essay->getWrittenHash());
+    }
+
+    /**
      * Handle a REST like request from the LongEssayWriter Web App
      * @throws \Throwable
      */
@@ -54,7 +65,7 @@ class Service extends Base\BaseService
     public function processWrittenText()
     {
         $essay = $this->context->getWrittenEssay();
-        if (isset($essay)) {
+        if (!empty($essay->getWrittenText())) {
             $this->context->setWrittenEssay(
                 $essay->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay((string) $essay->getWrittenText()))
             );

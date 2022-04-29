@@ -50,11 +50,20 @@ abstract class BaseService
         $this->setFrontendParam('Environment', $this->context->getEnvironmentKey());
         $this->setFrontendParam('Token', $token->getValue());
 
+        $this->setSpecificFrontendParams();
+
         // use this if browsers prevent cookies being saved for a redirection
         //$this->redirectByHtml($this->context->getFrontendUrl());
 
         header('Location: ' . $this->context->getFrontendUrl());
     }
+
+    /**
+     * Set specific frontend params required by an app
+     * e.g. the current item key for the corrector app
+     */
+    abstract protected function setSpecificFrontendParams();
+
 
     /**
      * Handle a REST like request from the Web App
