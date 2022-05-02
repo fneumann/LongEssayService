@@ -102,8 +102,7 @@ abstract class BaseService
      */
     protected function redirectByHtml($url)
     {
-        echo <<<END
-            <!DOCTYPE html>
+        echo '<!DOCTYPE html>
             <html>
             <head>
                <meta http-equiv="refresh" content="0; url=$url">
@@ -111,8 +110,7 @@ abstract class BaseService
             <body>
                <a href="$url">Redirect to $url ...</a>
             </body>
-            </html>'
-            END;
+            </html>';
         exit;
     }
 

@@ -132,6 +132,7 @@ abstract class BaseRest extends App
     {
         return $this->response = $this->response
             ->withHeader('Content-Type', 'application/json')
+            ->withHeader('LongEssayTime', (string) time())
             ->withStatus($status)
             ->withJson($json);
     }
