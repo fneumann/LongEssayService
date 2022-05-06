@@ -26,6 +26,7 @@ class Rest extends Base\BaseRest
     {
         parent::init($context, $dependencies);
         $this->get('/data', [$this,'getData']);
+        $this->put('/start', [$this,'putStart']);
         $this->put('/steps', [$this,'putSteps']);
     }
 
@@ -88,6 +89,39 @@ class Rest extends Base\BaseRest
     }
 
     /**
+     * PUT the writing start
+     * @param Request  $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+    public function putStart(Request $request, Response $response, array $args): Response
+    {
+        // common checks and initializations
+        if (!$this->prepare($request, $response, $args)) {
+            return $this->response;
+        }
+
+        $data = $this->request->getParsedBody();
+        if (!isset($data['started']) || !is_int($data['started'])) {
+            return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'start timestamp expected');
+        }
+
+        $essay = $this->context->getWrittenEssay();
+        if (!empty($essay->getEditStarted()))
+        {
+            return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'start is already set');
+        }
+
+        $essay = $essay->withEditStarted($data['started']);
+        $this->context->setWrittenEssay($essay);
+
+        $this->refreshToken();
+        return $this->setResponse(StatusCode::HTTP_OK);
+    }
+
+
+        /**
      * PUT the settings
      * @param Request  $request
      * @param Response $response
