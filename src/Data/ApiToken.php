@@ -21,7 +21,7 @@ class ApiToken
     public function __construct(string $value, string $ip_address, int $expires)
     {
         if (strlen($value) != 32) {
-            throw new \InvalidArgumentException("token length must be 20, given: $value");
+            throw new \InvalidArgumentException("token length must be 32, given: $value");
         }
 
         if (urlencode($value) != $value) {
