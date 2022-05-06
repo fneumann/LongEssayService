@@ -54,19 +54,26 @@ abstract class BaseRest extends App
         $this->args = $args;
         $this->params = $request->getParams();
 
-
-        $user_key = $this->request->getHeaderLine('LongEssayUser');
-        $env_key = $this->request->getHeaderLine('LongEssayEnvironment');
-        $token_value = $this->request->getHeaderLine('LongEssayToken');
+        $user_key = $this->params['LongEssayUser'];
+        $env_key = $this->params['LongEssayEnvironment'];
+        $time = $this->params['LongEssayTime'];
+        $signature = $this->params['LongEssaySignature'];
 
         if (empty($user_key)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing Long-Essay-User header');
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing LongEssayUser param');
+            return false;
         }
         if (empty($env_key)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing Long-Essay-Environment header');
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing LongEssayEnvironment param');
+            return false;
         }
-        if (empty($env_key)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing Long-Essay-Token header');
+        if (empty($time)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing LongEssayTime param');
+            return false;
+        }
+        if (empty($signature)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing LongEssaySignature param');
+            return false;
         }
 
         try {
@@ -96,15 +103,23 @@ abstract class BaseRest extends App
         $token = $this->context->getApiToken();
 
         if (!isset($token)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token is not found');
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'current token is not found');
             return false;
         }
-        if ($this->dependencies->auth()->isTokenWrong($token, $token_value)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token value is wrong');
+        if (!$this->dependencies->auth()->checkTokenValid($token)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'current token is expired');
             return false;
         }
-        if ($this->dependencies->auth()->isTokenExpired($token)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'token is expired');
+        if (!$this->dependencies->auth()->checkRemoteAddress($token)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'client ip is not valid');
+            return false;
+        }
+        if (!$this->dependencies->auth()->checkRequestTime($time)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'request is out of time');
+            return false;
+        }
+        if (!$this->dependencies->auth()->checkSignature($token, $user_key, $env_key, $time, $signature)) {
+            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'signature is wrong');
             return false;
         }
 

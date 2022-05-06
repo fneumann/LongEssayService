@@ -27,34 +27,34 @@ class Authentication
     }
 
     /**
-     * Check if a token is wrong
-     * @param ApiToken $token
-     * @param string $value
-     * @return bool
+     * Check a request signature
      */
-    public function isTokenWrong(ApiToken $token, string $value): bool
+    public function checkSignature(ApiToken $token, string $user_key, string $env_key, int $time, string $signature) : bool
     {
-        if ($token->getValue() != $value) {
-            return true;
-        }
-
-        if ($token->getIpAddress() != $_SERVER['REMOTE_ADDR']) {
-            return true;
-        }
-
-        return false;
+        return (md5($user_key . $env_key . $token->getValue() . $time) == $signature);
     }
 
     /**
-     * Check if a token is expired
-     * @param ApiToken $token
-     * @return bool
+     * Check if the client ip address is allowed for a token
      */
-    public function isTokenExpired(ApiToken $token): bool
+    public function checkRemoteAddress(ApiToken $token) : bool
     {
-        return $token->getExpires() < time();
+        return ($token->getIpAddress() == $_SERVER['REMOTE_ADDR']);
     }
 
+    /**
+     * Check if the request time is valid
+     */
+    public function checkRequestTime(int $time) : bool
+    {
+        return (abs(time() - $time) < 30);
+    }
 
-
+    /**
+     * Check if a token is still valid
+     */
+    public function checkTokenValid(ApiToken $token) : bool
+    {
+        return $token->getExpires() >= time();
+    }
 }

@@ -29,6 +29,10 @@ class WritingResource
         $this->mimetype = $mimetype;
         $this->size = $size;
 
+        if (urlencode($key) != $key) {
+            throw new \InvalidArgumentException("key must not change by urlencode, given: $key");
+        }
+
         if ($type == self::TYPE_FILE && empty($mimetype)) {
             throw new \InvalidArgumentException("mime type must be given for a file resource");
         }

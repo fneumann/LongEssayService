@@ -4,6 +4,7 @@ namespace Edutiek\LongEssayService\Writer;
 
 use Edutiek\LongEssayService\Base;
 use Edutiek\LongEssayService\Base\BaseContext;
+use Edutiek\LongEssayService\Data\WritingResource;
 use Edutiek\LongEssayService\Data\WritingStep;
 use Edutiek\LongEssayService\Internal\Dependencies;
 use Slim\Http\Request;
@@ -26,6 +27,8 @@ class Rest extends Base\BaseRest
     {
         parent::init($context, $dependencies);
         $this->get('/data', [$this,'getData']);
+        $this->get('/file/{key}', [$this,'getFile']);
+
         $this->put('/start', [$this,'putStart']);
         $this->put('/steps', [$this,'putSteps']);
     }
@@ -100,6 +103,32 @@ class Rest extends Base\BaseRest
         $this->refreshToken();
         return $this->setResponse(StatusCode::HTTP_OK, $json);
     }
+
+    /**
+     * GET a resource file
+     * @param Request  $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+    public function getFile(Request $request, Response $response, array $args): Response
+    {
+        // common checks and initializations
+        if (!$this->prepare($request, $response, $args)) {
+            return $this->response;
+        }
+
+        foreach ($this->context->getWritingResources() as $resource) {
+
+            if ($resource->getKey() == $args['key'] && $resource->getType() == WritingResource::TYPE_FILE) {
+                $this->context->sendFileResource($resource->getKey());
+                return $response;
+            }
+        }
+
+        return $this->setResponse(StatusCode::HTTP_NOT_FOUND, 'resource not found');
+    }
+
 
     /**
      * PUT the writing start
