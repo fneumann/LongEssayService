@@ -49,6 +49,18 @@ class Rest extends Base\BaseRest
         $task = $this->context->getWritingTask();
         $essay = $this->context->getWrittenEssay();
 
+        $resources = [];
+        foreach ($this->context->getWritingResources() as $resource) {
+            $resources[] = [
+                'key' => $resource->getKey(),
+                'title' => $resource->getTitle(),
+                'type' => $resource->getType(),
+                'source' => $resource->getSource(),
+                'mimetype' => $resource->getMimetype(),
+                'size' => $resource->getSize()
+            ];
+        }
+
         $steps = [];
         // send all steps if undo should be based on them
         // then each step would need a revert diff
@@ -82,6 +94,7 @@ class Rest extends Base\BaseRest
                 'started' => $essay->getEditStarted(),
                 'steps' => $steps
             ],
+            'resources' => $resources,
         ];
 
         $this->refreshToken();

@@ -7,6 +7,11 @@ namespace Edutiek\LongEssayService\Data;
  */
 class WritingTask
 {
+    protected $title;
+    protected $writer_name;
+    protected $instructions;
+    protected $writing_end;
+
     /**
      * Constructor (see getters)
      */
@@ -17,12 +22,6 @@ class WritingTask
         $this->writer_name = $writer_name;
         $this->writing_end = $writing_end;
     }
-
-    protected $title;
-    protected $writer_name;
-    protected $instructions;
-    protected $writing_end;
-
 
     /**
      * Title of the task, to be shown in the app bar

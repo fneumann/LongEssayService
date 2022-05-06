@@ -7,6 +7,10 @@ namespace Edutiek\LongEssayService\Data;
  */
 class ApiToken
 {
+    protected $value;
+    protected $ip_address;
+    protected $expires;
+
     /**
      * Constructor
      *
@@ -32,11 +36,6 @@ class ApiToken
         $this->ip_address = $ip_address;
         $this->expires = $expires;
     }
-
-    protected $value;
-    protected $ip_address;
-    protected $expires;
-
 
     /**
      * Token value

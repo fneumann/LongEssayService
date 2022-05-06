@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Writer;
 use Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\WritingResource;
 use Edutiek\LongEssayService\Data\WritingSettings;
 use Edutiek\LongEssayService\Data\WritingStep;
 use Edutiek\LongEssayService\Data\WritingTask;
@@ -68,4 +69,17 @@ interface Context extends Base\BaseContext
      * Note: the hash is a combination of the resulting text and the timestamp and therefore unique
      */
     public function hasWritingStepByHashAfter(string $hash_after): bool;
+
+    /**
+     * Get the resources that should be available in the writer app
+     * @return WritingResource[]
+     */
+    public function getWritingResources(): array;
+
+    /**
+     * Send a file resource to the browser
+     * The 'Content-Disposition' HTTP response header must be inline
+     * The 'Content-Type' HTTP response header must give the correct mime type
+     */
+    public function sendFileResource(string $key): void;
 }
