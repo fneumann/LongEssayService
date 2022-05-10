@@ -29,9 +29,9 @@ class Authentication
     /**
      * Check a request signature
      */
-    public function checkSignature(ApiToken $token, string $user_key, string $env_key, int $time, string $signature) : bool
+    public function checkSignature(ApiToken $token, string $user_key, string $env_key, string $signature) : bool
     {
-        return (md5($user_key . $env_key . $token->getValue() . $time) == $signature);
+        return (md5($user_key . $env_key . $token->getValue()) == $signature);
     }
 
     /**
@@ -40,14 +40,6 @@ class Authentication
     public function checkRemoteAddress(ApiToken $token) : bool
     {
         return ($token->getIpAddress() == $_SERVER['REMOTE_ADDR']);
-    }
-
-    /**
-     * Check if the request time is valid
-     */
-    public function checkRequestTime(int $time) : bool
-    {
-        return (abs(time() - $time) < 30);
     }
 
     /**

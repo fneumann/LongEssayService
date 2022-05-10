@@ -56,7 +56,6 @@ abstract class BaseRest extends App
 
         $user_key = $this->params['LongEssayUser'];
         $env_key = $this->params['LongEssayEnvironment'];
-        $time = $this->params['LongEssayTime'];
         $signature = $this->params['LongEssaySignature'];
 
         if (empty($user_key)) {
@@ -65,10 +64,6 @@ abstract class BaseRest extends App
         }
         if (empty($env_key)) {
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing LongEssayEnvironment param');
-            return false;
-        }
-        if (empty($time)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'missing LongEssayTime param');
             return false;
         }
         if (empty($signature)) {
@@ -114,11 +109,7 @@ abstract class BaseRest extends App
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'client ip is not valid');
             return false;
         }
-        if (!$this->dependencies->auth()->checkRequestTime($time)) {
-            $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'request is out of time');
-            return false;
-        }
-        if (!$this->dependencies->auth()->checkSignature($token, $user_key, $env_key, $time, $signature)) {
+        if (!$this->dependencies->auth()->checkSignature($token, $user_key, $env_key, $signature)) {
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'signature is wrong');
             return false;
         }
