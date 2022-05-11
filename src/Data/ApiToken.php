@@ -57,6 +57,7 @@ class ApiToken
 
     /**
      * Unix timestamp when the token expires
+     * 0 means that the token has no expiration time
      */
     public function getExpires(): int
     {

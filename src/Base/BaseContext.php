@@ -85,27 +85,21 @@ interface BaseContext
 
 
     /**
-     * Get the default lifetime of an API token in seconds
-     * A token will be refreshed with every REST call
-     * If no call is given, an existing token will expire in this time after creation
-     */
-    public function getDefaultTokenLifetime(): int;
-
-
-    /**
      * Get the api token for the context
      * This is used for the authorization of REST calls
-     * Only one valid token should exist for the current user and task
+     * Only one valid api token should exist for the current user, task and purpose
+     * @param string $purpose   'data' or 'file'
      */
-    public function getApiToken(): ?ApiToken;
+    public function getApiToken(string $purpose): ?ApiToken;
 
 
     /**
      * Set a new api token for the context
      * This is used when a frontend is opened
-     * It should overwrite an existing api token of the current user and task
+     * It should overwrite an existing api token of the current user, task and purpose
      * This will make REST calls from already opened frontends for the same context invalid
+     * @param string $purpose   'data' or 'file'
      */
-    public function setApiToken(ApiToken $api_token);
+    public function setApiToken(ApiToken $api_token, string $purpose);
 
 }

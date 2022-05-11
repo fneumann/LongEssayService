@@ -3,6 +3,7 @@
 namespace Edutiek\LongEssayService\Base;
 
 use Edutiek\LongEssayService\Exceptions\ContextException;
+use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
 use Slim\App;
 use Slim\Http\Request;
@@ -29,6 +30,8 @@ abstract class BaseRest extends App
     /** @var array */
     protected $params;
 
+    /** @var string */
+    protected $purpose;
 
     /**
      * Init server / add handlers
@@ -45,14 +48,16 @@ abstract class BaseRest extends App
      * @param Request $request
      * @param Response $response
      * @param array $args
+     * @param string $purpose 'data' or 'file'
      * @return bool
      */
-    protected function prepare(Request $request, Response $response, array $args): bool
+    protected function prepare(Request $request, Response $response, array $args, string $purpose): bool
     {
         $this->request = $request;
         $this->response = $response;
         $this->args = $args;
         $this->params = $request->getParams();
+        $this->purpose = $purpose;
 
         $user_key = $this->params['LongEssayUser'];
         $env_key = $this->params['LongEssayEnvironment'];
@@ -95,7 +100,7 @@ abstract class BaseRest extends App
             return false;
         }
 
-        $token = $this->context->getApiToken();
+        $token = $this->context->getApiToken($purpose);
 
         if (!isset($token)) {
             $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, 'current token is not found');
@@ -118,15 +123,25 @@ abstract class BaseRest extends App
     }
 
     /**
-     * Set a new token and add it as header
+     * Generate a new data token and set it in the response
      */
-    protected function refreshToken()
+    protected function setNewDataToken()
     {
-        $token = $this->dependencies->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
-        $this->context->setApiToken($token);
-        $this->response = $this->response->withHeader('LongEssayToken', $token->getValue());
+        $token = $this->dependencies->auth()->generateApiToken(Authentication::PURPOSE_DATA);
+        $this->context->setApiToken($token, Authentication::PURPOSE_DATA);
+        $this->response = $this->response->withHeader('LongEssayDataToken', $token->getValue());
     }
 
+    /**
+     * Generate a new file token and set it in the response
+     */
+    protected function setNewFileToken()
+    {
+        $token = $this->dependencies->auth()->generateApiToken(Authentication::PURPOSE_FILE);
+        $this->context->setApiToken($token, Authentication::PURPOSE_FILE);
+        $this->response = $this->response->withHeader('LongEssayFileToken', $token->getValue());
+
+    }
 
     /**
      * Modify the response

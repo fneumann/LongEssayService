@@ -2,9 +2,8 @@
 
 namespace Edutiek\LongEssayService\Base;
 
+use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
-use Edutiek\LongEssayService\Tools\HtmlProcessing;
-use Edutiek\LongEssayService\Writer\Rest;
 
 /**
  * Common API of the Writer and Corrector services
@@ -41,8 +40,8 @@ abstract class BaseService
      */
     public function openFrontend()
     {
-        $token = $this->dependencies->auth()->generateApiToken($this->context->getDefaultTokenLifetime());
-        $this->context->setApiToken($token);
+        $token = $this->dependencies->auth()->generateApiToken(Authentication::PURPOSE_DATA);
+        $this->context->setApiToken($token, Authentication::PURPOSE_DATA);
 
         $this->setFrontendParam('Backend', $this->context->getBackendUrl());
         $this->setFrontendParam('Return', $this->context->getReturnUrl());

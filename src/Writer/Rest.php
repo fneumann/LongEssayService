@@ -6,6 +6,7 @@ use Edutiek\LongEssayService\Base;
 use Edutiek\LongEssayService\Base\BaseContext;
 use Edutiek\LongEssayService\Data\WritingResource;
 use Edutiek\LongEssayService\Data\WritingStep;
+use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -44,7 +45,7 @@ class Rest extends Base\BaseRest
     public function getData(Request $request, Response $response, array $args): Response
     {
         // common checks and initializations
-        if (!$this->prepare($request, $response, $args)) {
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_DATA)) {
             return $this->response;
         }
 
@@ -100,7 +101,8 @@ class Rest extends Base\BaseRest
             'resources' => $resources,
         ];
 
-        $this->refreshToken();
+        $this->setNewDataToken();
+        $this->setNewFileToken();
         return $this->setResponse(StatusCode::HTTP_OK, $json);
     }
 
@@ -114,7 +116,7 @@ class Rest extends Base\BaseRest
     public function getFile(Request $request, Response $response, array $args): Response
     {
         // common checks and initializations
-        if (!$this->prepare($request, $response, $args)) {
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_FILE)) {
             return $this->response;
         }
 
@@ -140,7 +142,7 @@ class Rest extends Base\BaseRest
     public function putStart(Request $request, Response $response, array $args): Response
     {
         // common checks and initializations
-        if (!$this->prepare($request, $response, $args)) {
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_DATA)) {
             return $this->response;
         }
 
@@ -158,7 +160,7 @@ class Rest extends Base\BaseRest
         $essay = $essay->withEditStarted($data['started']);
         $this->context->setWrittenEssay($essay);
 
-        $this->refreshToken();
+        $this->setNewDataToken();
         return $this->setResponse(StatusCode::HTTP_OK);
     }
 
@@ -173,7 +175,7 @@ class Rest extends Base\BaseRest
     public function putSteps(Request $request, Response $response, array $args): Response
     {
         // common checks and initializations
-        if (!$this->prepare($request, $response, $args)) {
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_DATA)) {
             return $this->response;
         }
 
@@ -237,7 +239,7 @@ class Rest extends Base\BaseRest
             ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay($currentText))
         );
 
-        $this->refreshToken();
+        $this->setNewDataToken();
         return $this->setResponse(StatusCode::HTTP_OK);
     }
 }
