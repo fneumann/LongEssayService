@@ -6,6 +6,7 @@ use Edutiek\LongEssayService\Base;
 use Edutiek\LongEssayService\Base\BaseContext;
 use Edutiek\LongEssayService\Data\WritingResource;
 use Edutiek\LongEssayService\Data\WritingStep;
+use Edutiek\LongEssayService\Data\WrittenEssay;
 use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
 use Slim\Http\Request;
@@ -32,6 +33,7 @@ class Rest extends Base\BaseRest
 
         $this->put('/start', [$this,'putStart']);
         $this->put('/steps', [$this,'putSteps']);
+        $this->put('/final', [$this,'putFinal']);
     }
 
 
@@ -96,7 +98,8 @@ class Rest extends Base\BaseRest
                 'content' => $essay->getWrittenText(),
                 'hash' => $essay->getWrittenHash(),
                 'started' => $essay->getEditStarted(),
-                'steps' => $steps
+                'authorized' => $essay->isAuthorized(),
+                'steps' => $steps,
             ],
             'resources' => $resources,
         ];
@@ -165,8 +168,8 @@ class Rest extends Base\BaseRest
     }
 
 
-        /**
-     * PUT the settings
+    /**
+     * PUT writing steps
      * @param Request  $request
      * @param Response $response
      * @param array $args
@@ -184,14 +187,72 @@ class Rest extends Base\BaseRest
             return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'list of steps expected');
         }
 
-        $dmp = new DiffMatchPatch();
+        $essay = $this->context->getWrittenEssay();
+        $this->saveWritingSteps($essay, $data['steps']);
+
+        $this->setNewDataToken();
+        return $this->setResponse(StatusCode::HTTP_OK);
+    }
+
+
+    /**
+     * PUT the final content
+     * @param Request  $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+    public function putFinal(Request $request, Response $response, array $args): Response
+    {
+        // common checks and initializations
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_DATA)) {
+            return $this->response;
+        }
+
+        $data = $this->request->getParsedBody();
+        if (!isset($data['steps']) || !is_array($data['steps'])) {
+            return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'list of steps expected');
+        }
+        if (!isset($data['content'])) {
+            return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'content expected');
+        }
+        if (!isset($data['hash'])) {
+            return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'hash expected');
+        }
+        if (!isset($data['authorized'])) {
+            return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'authorization expected');
+        }
 
         $essay = $this->context->getWrittenEssay();
+        $this->saveWritingSteps($essay, $data['steps']);
+
+        $this->context->setWrittenEssay($essay
+            ->withWrittenText((string) $data['content'])
+            ->withWrittenHash((string) $data['hash'])
+            ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay((string) $data['content']))
+            ->withIsAuthorized((bool) $data['authorized'])
+        );
+
+
+        $this->setNewDataToken();
+        return $this->setResponse(StatusCode::HTTP_OK);
+    }
+
+
+    /**
+     * Save a list of writing steps
+     * @param WrittenEssay $essay
+     * @param array $data
+     */
+    protected function saveWritingSteps(WrittenEssay $essay, array $data)
+    {
+        $dmp = new DiffMatchPatch();
+
         $currentText = $essay->getWrittenText();
         $currentHash = $essay->getWrittenHash();
 
         $steps = [];
-        foreach($data['steps'] as $entry) {
+        foreach($data as $entry) {
             $step = new WritingStep(
                 $entry['timestamp'],
                 $entry['content'],
@@ -221,7 +282,7 @@ class Rest extends Base\BaseRest
 
             if ($step->isDelta()) {
                 $patches = $dmp->patch_fromText($step->getContent());
-                $result =  $dmp->patch_apply($patches, $currentText);
+                $result = $dmp->patch_apply($patches, $currentText);
                 $currentText = $result[0];
             }
             else {
@@ -238,8 +299,5 @@ class Rest extends Base\BaseRest
             ->withWrittenHash($currentHash)
             ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay($currentText))
         );
-
-        $this->setNewDataToken();
-        return $this->setResponse(StatusCode::HTTP_OK);
     }
 }
