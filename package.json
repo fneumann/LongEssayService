@@ -1,6 +1,6 @@
 {
   "name": "long-essay-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "long-essay-writer": "github:fneumann/long-essay-writer"
   }
