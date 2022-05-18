@@ -2,22 +2,24 @@
 
 namespace Edutiek\LongEssayService\Data;
 
-class CorrectionItem
+class Corrector
 {
+
     protected $key;
     protected $title;
 
     /**
-     * Constructor
+     * Constructor (see getters)
      */
-    public function __construct(string $key, string $title) {
+    public function __construct(string $key, string $title)
+    {
         $this->key = $key;
         $this->title = $title;
     }
 
     /**
-     * Get the writer key identifying the correction item
-     * This will normally be the user key of the student that wrote an essay
+     * Get the corrector key identifying the corrector
+     * This must be the user key of the corrector
      */
     public function getKey(): string
     {
@@ -25,11 +27,12 @@ class CorrectionItem
     }
 
     /**
-     * Get the title that should be displayed for that item
-     * This may be an anonymous name for the student
+     * Get the title that should be displayed for the corrector
+     * This may be generated name from the user account
      */
     public function getTitle(): string
     {
         return $this->title;
     }
+
 }

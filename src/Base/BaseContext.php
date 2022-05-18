@@ -1,6 +1,7 @@
 <?php
 
 namespace Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\EnvResource;
 use Edutiek\LongEssayService\Exceptions\ContextException;
 use Edutiek\LongEssayService\Data\ApiToken;
 
@@ -101,5 +102,20 @@ interface BaseContext
      * @param string $purpose   'data' or 'file'
      */
     public function setApiToken(ApiToken $api_token, string $purpose);
+
+
+    /**
+     * Get the resources that should be available in the app
+     * @return EnvResource[]
+     */
+    public function getResources(): array;
+
+
+    /**
+     * Send a file resource to the browser
+     * The 'Content-Disposition' HTTP response header must be inline
+     * The 'Content-Type' HTTP response header must give the correct mime type
+     */
+    public function sendFileResource(string $key): void;
 
 }

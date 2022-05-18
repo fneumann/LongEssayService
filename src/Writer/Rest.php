@@ -4,7 +4,6 @@ namespace Edutiek\LongEssayService\Writer;
 
 use Edutiek\LongEssayService\Base;
 use Edutiek\LongEssayService\Base\BaseContext;
-use Edutiek\LongEssayService\Data\WritingResource;
 use Edutiek\LongEssayService\Data\WritingStep;
 use Edutiek\LongEssayService\Data\WrittenEssay;
 use Edutiek\LongEssayService\Internal\Authentication;
@@ -14,6 +13,9 @@ use Slim\Http\Response;
 use Slim\Http\StatusCode;
 use DiffMatchPatch\DiffMatchPatch;
 
+/**
+ * Handler of REST requests from the writer app
+ */
 class Rest extends Base\BaseRest
 {
     /** @var Context  */
@@ -22,27 +24,19 @@ class Rest extends Base\BaseRest
 
     /**
      * Init server / add handlers
-     * @param Context $context
-     * @param Dependencies $dependencies
      */
     public function init(BaseContext $context, Dependencies $dependencies)
     {
         parent::init($context, $dependencies);
         $this->get('/data', [$this,'getData']);
         $this->get('/file/{key}', [$this,'getFile']);
-
         $this->put('/start', [$this,'putStart']);
         $this->put('/steps', [$this,'putSteps']);
         $this->put('/final', [$this,'putFinal']);
     }
 
-
     /**
-     * GET the settings
-     * @param Request  $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
+     * GET the data for initializing the writer
      */
     public function getData(Request $request, Response $response, array $args): Response
     {
@@ -56,7 +50,7 @@ class Rest extends Base\BaseRest
         $essay = $this->context->getWrittenEssay();
 
         $resources = [];
-        foreach ($this->context->getWritingResources() as $resource) {
+        foreach ($this->context->getResources() as $resource) {
             $resources[] = [
                 'key' => $resource->getKey(),
                 'title' => $resource->getTitle(),
@@ -109,38 +103,9 @@ class Rest extends Base\BaseRest
         return $this->setResponse(StatusCode::HTTP_OK, $json);
     }
 
-    /**
-     * GET a resource file
-     * @param Request  $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
-     */
-    public function getFile(Request $request, Response $response, array $args): Response
-    {
-        // common checks and initializations
-        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_FILE)) {
-            return $this->response;
-        }
-
-        foreach ($this->context->getWritingResources() as $resource) {
-
-            if ($resource->getKey() == $args['key'] && $resource->getType() == WritingResource::TYPE_FILE) {
-                $this->context->sendFileResource($resource->getKey());
-                return $response;
-            }
-        }
-
-        return $this->setResponse(StatusCode::HTTP_NOT_FOUND, 'resource not found');
-    }
-
 
     /**
-     * PUT the writing start
-     * @param Request  $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
+     * PUT the writing start timestamp
      */
     public function putStart(Request $request, Response $response, array $args): Response
     {
@@ -169,11 +134,7 @@ class Rest extends Base\BaseRest
 
 
     /**
-     * PUT writing steps
-     * @param Request  $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
+     * PUT a list of writing steps
      */
     public function putSteps(Request $request, Response $response, array $args): Response
     {
@@ -197,10 +158,6 @@ class Rest extends Base\BaseRest
 
     /**
      * PUT the final content
-     * @param Request  $request
-     * @param Response $response
-     * @param array $args
-     * @return Response
      */
     public function putFinal(Request $request, Response $response, array $args): Response
     {
@@ -241,8 +198,6 @@ class Rest extends Base\BaseRest
 
     /**
      * Save a list of writing steps
-     * @param WrittenEssay $essay
-     * @param array $data
      */
     protected function saveWritingSteps(WrittenEssay $essay, array $data)
     {
@@ -290,7 +245,6 @@ class Rest extends Base\BaseRest
             }
             $currentHash = $step->getHashAfter();
         }
-
 
         // save the data
         $this->context->addWritingSteps($steps);

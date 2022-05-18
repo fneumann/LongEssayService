@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Base;
 
+use Edutiek\LongEssayService\Data\EnvResource;
 use Edutiek\LongEssayService\Exceptions\ContextException;
 use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
@@ -10,6 +11,10 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Http\StatusCode;
 
+
+/**
+ * Base class for the REST handlers of the writer and corrector apps
+ */
 abstract class BaseRest extends App
 {
     /** @var BaseContext */
@@ -144,7 +149,7 @@ abstract class BaseRest extends App
     }
 
     /**
-     * Modify the response
+     * Modify the response with a status code and json return
      * @param int      $status
      * @param string|array $json
      * @return Response
@@ -157,4 +162,27 @@ abstract class BaseRest extends App
             ->withStatus($status)
             ->withJson($json);
     }
+
+
+    /**
+     * GET a resource file (sent as inline resource)
+     */
+    public function getFile(Request $request, Response $response, array $args): Response
+    {
+        // common checks and initializations
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_FILE)) {
+            return $this->response;
+        }
+
+        foreach ($this->context->getResources() as $resource) {
+            if ($resource->getKey() == $args['key'] && $resource->getType() == EnvResource::TYPE_FILE) {
+                $this->context->sendFileResource($resource->getKey());
+                return $response;
+            }
+        }
+
+        return $this->setResponse(StatusCode::HTTP_NOT_FOUND, 'resource not found');
+    }
+
+
 }

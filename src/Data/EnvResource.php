@@ -3,9 +3,10 @@
 namespace Edutiek\LongEssayService\Data;
 
 /**
- * Data object for a resource that should be displayed in the writer
+ * Data object for a resource defined in the environment
+ * For display in the writer or corrector
  */
-class WritingResource
+class EnvResource
 {
     const TYPE_FILE = 'file';
     const TYPE_URL = 'url';

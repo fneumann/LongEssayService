@@ -35,6 +35,7 @@ class Service extends Base\BaseService
     {
         // add the hash of the current essay content
         // this will be used to check if the writer content is outdated
+
         $essay = $this->context->getWrittenEssay();
         $this->setFrontendParam('Hash', (string) $essay->getWrittenHash());
     }

@@ -12,7 +12,7 @@ class Service extends Base\BaseService
     /**
      * @const Path of the frontend web app, relative to the service root directory, without starting slash
      */
-    public const FRONTEND_RELATIVE_PATH = 'node_modules/long-essay-writer/dist/index.html';
+    public const FRONTEND_RELATIVE_PATH = 'node_modules/long-essay-corrector/dist/index.html';
 
     /** @var Context */
     protected $context;
@@ -34,8 +34,7 @@ class Service extends Base\BaseService
      */
     protected function setSpecificFrontendParams()
     {
-        if (!empty($item = $this->context->getCurrentItem()))
-        {
+        if (!empty($item = $this->context->getCurrentItem())) {
             $this->setFrontendParam('Item', $item->getKey());
         }
     }
