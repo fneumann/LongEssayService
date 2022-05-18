@@ -16,8 +16,8 @@ class CorrectionItem
     }
 
     /**
-     * Get the writer key identifying the correction item
-     * This will normally be the user key of the student that wrote an essay
+     * Get the key identifying the correction item
+     * This will normally be the key of the essay writer
      */
     public function getKey(): string
     {
@@ -26,7 +26,7 @@ class CorrectionItem
 
     /**
      * Get the title that should be displayed for that item
-     * This may be an anonymous name for the student
+     * This may be an anonymous name for the writer
      */
     public function getTitle(): string
     {

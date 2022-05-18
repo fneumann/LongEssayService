@@ -19,9 +19,9 @@ use Edutiek\LongEssayService\Data\WrittenEssay;
 interface Context extends Base\BaseContext
 {
     /**
-     * Get the Task that should be done in the editor
-     * The instructions of this task will be shown to the student when the writer is opened
-     * The writing end will limit the time for writing
+     * Get the correction that should be done in the app
+     * The title and instructions are shown in the app
+     * The correction end will limit the time for correction
      */
     public function getCorrectionTask(): CorrectionTask;
 
@@ -34,8 +34,8 @@ interface Context extends Base\BaseContext
 
 
     /**
-     * Get the items that are assigned for correction
-     * These items can be stepped through in the corrector
+     * Get the items that are assigned to the current user for correction
+     * These items can be stepped through in the corrector app
      * @return CorrectionItem[]
      */
     public function getCorrectionItems(): array;
@@ -43,7 +43,7 @@ interface Context extends Base\BaseContext
 
     /**
      * Get the current correction item
-     * This item should be initially loaded in the opened corrector
+     * This item should be initially loaded in the corrector app
      * It must be an item in the list provided by getCorrectionItems()
      */
     public function getCurrentItem(): ?CorrectionItem;
@@ -52,7 +52,7 @@ interface Context extends Base\BaseContext
     /**
      * Get the written essay by the key of a correction item
      */
-    public function getEssayOfItem(string $item_key): WrittenEssay;
+    public function getEssayOfItem(string $item_key): ?WrittenEssay;
 
 
     /**
@@ -65,12 +65,12 @@ interface Context extends Base\BaseContext
     /**
      * Get the correction summary given by a corrector for a correction item
      */
-    public function getCorrectionSummary(string $item_key, string $corrector_key): CorrectionSummary;
+    public function getCorrectionSummary(string $item_key, string $corrector_key): ?CorrectionSummary;
 
 
     /**
      * Set the correction summary given by a corrector for a correction item
      */
-    public function setCorrectionSummary(string $item_key, string $corrector_key, CorrectionSummary $summary);
+    public function setCorrectionSummary(string $item_key, string $corrector_key, CorrectionSummary $summary) : void;
 
 }
