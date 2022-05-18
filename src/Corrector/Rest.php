@@ -123,9 +123,9 @@ class Rest extends Base\BaseRest
                     ];
                     $summary = $this->context->getCorrectionSummary($item->getKey(), $corrector->getKey());
                     $summaries[$corrector->getKey()] = [
-                        'text' => $summary->getText(),
-                        'points' => $summary->getPoints(),
-                        'grade_key' => $summary->getGradeKey()
+                        'text' => isset($summary) ? $summary->getText() : null,
+                        'points' => isset($summary) ? $summary->getPoints() : null,
+                        'grade_key' => isset($summary) ? $summary->getGradeKey() : null
                     ];
                 }
                 if (!isset($correctors[$this->context->getUserKey()])) {
@@ -134,10 +134,10 @@ class Rest extends Base\BaseRest
 
                 $json = [
                     'essay' => [
-                        'text'=> $essay->getProcessedText(),
-                        'started' => $essay->getEditStarted(),
-                        'ended' => $essay->getEditEnded(),
-                        'authorized' => $essay->isAuthorized()
+                        'text'=> isset($essay) ? $essay->getProcessedText() : null,
+                        'started' => isset($essay) ? $essay->getEditStarted() : null,
+                        'ended' => isset($essay) ? $essay->getEditEnded() : null,
+                        'authorized' => isset($essay) ? $essay->isAuthorized() : null
                     ],
                     'correctors' => $correctors,        // indexed by corrector key
                     'summaries' => $summaries           // indexed by corrector key
