@@ -3,6 +3,7 @@
 namespace Edutiek\LongEssayService\Corrector;
 use Edutiek\LongEssayService\Base;
 use Edutiek\LongEssayService\Data\CorrectionItem;
+use Edutiek\LongEssayService\Data\CorrectionSettings;
 use Edutiek\LongEssayService\Data\CorrectionSummary;
 use Edutiek\LongEssayService\Data\CorrectionTask;
 use Edutiek\LongEssayService\Data\Corrector;
@@ -25,6 +26,10 @@ interface Context extends Base\BaseContext
      */
     public function getCorrectionTask(): CorrectionTask;
 
+    /**
+     * Get the correction settings for the app
+     */
+    public function getCorrectionSettings() : CorrectionSettings;
 
     /**
      * Get the grade levels defined in the environment
@@ -39,6 +44,14 @@ interface Context extends Base\BaseContext
      * @return CorrectionItem[]
      */
     public function getCorrectionItems(): array;
+
+
+    /**
+     * Get the current corrector
+     * This corrector represents the current user
+     * If the current user is no corrector, return null
+     */
+    public function getCurrentCorrector(): ?Corrector;
 
 
     /**

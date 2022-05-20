@@ -50,6 +50,7 @@ class Rest extends Base\BaseRest
         }
 
         $task = $this->context->getCorrectionTask();
+        $settings = $this->context->getCorrectionSettings();
 
         $resources = [];
         foreach ($this->context->getResources() as $resource) {
@@ -84,6 +85,11 @@ class Rest extends Base\BaseRest
                 'instructions' => $task->getInstructions(),
                 'correction_end' => $task->getCorrectionEnd()
             ],
+            'settings' => [
+                'mutual_visibility' => $settings->hasMutualVisibility(),
+                'multi_color_highlight' => $settings->hasMultiColorHighlight(),
+                'max_points' => $settings->getMaxPoints()
+            ],
             'resources' => $resources,
             'levels' => $levels,
             'items' => $items
@@ -109,28 +115,30 @@ class Rest extends Base\BaseRest
             return $this->response;
         }
 
+        $CurrentCorrector = $this->context->getCurrentCorrector();
+        $CurrentCorrectorKey = isset($CurrentCorrector) ? $CurrentCorrector->getKey() : '';
+
         foreach ($this->context->getCorrectionItems() as $item) {
 
             if ($item->getKey() == $args['key']) {
 
                 $essay = $this->context->getEssayOfItem($item->getKey());
                 $correctors = [];
-                $summaries = [];
                 foreach ($this->context->getCorrectorsOfItem($item->getKey()) as $corrector) {
+                    // add only other correctors
+                    if ($corrector->getKey() == $CurrentCorrectorKey) {
+                        continue;
+                    }
+                    $summary = $this->context->getCorrectionSummary($item->getKey(), $corrector->getKey());
                     $correctors[$corrector->getKey()] = [
                         'key' => $corrector->getKey(),
-                        'title' => $corrector->getTitle()
-                    ];
-                    $summary = $this->context->getCorrectionSummary($item->getKey(), $corrector->getKey());
-                    $summaries[$corrector->getKey()] = [
+                        'title' => $corrector->getTitle(),
                         'text' => isset($summary) ? $summary->getText() : null,
                         'points' => isset($summary) ? $summary->getPoints() : null,
                         'grade_key' => isset($summary) ? $summary->getGradeKey() : null
                     ];
                 }
-                if (!isset($correctors[$this->context->getUserKey()])) {
-                    return $this->setResponse(StatusCode::HTTP_FORBIDDEN, 'current user is no corrector');
-                }
+                $summary = $this->context->getCorrectionSummary($item->getKey(), $CurrentCorrectorKey);
 
                 $json = [
                     'essay' => [
@@ -140,7 +148,11 @@ class Rest extends Base\BaseRest
                         'authorized' => isset($essay) ? $essay->isAuthorized() : null
                     ],
                     'correctors' => $correctors,        // indexed by corrector key
-                    'summaries' => $summaries           // indexed by corrector key
+                    'summary' => [
+                        'text' => isset($summary) ? $summary->getText() : null,
+                        'points' => isset($summary) ? $summary->getPoints() : null,
+                        'grade_key' => isset($summary) ? $summary->getGradeKey() : null
+                    ],
                 ];
 
                 $this->setNewDataToken();
@@ -167,17 +179,19 @@ class Rest extends Base\BaseRest
         }
         $data = $this->request->getParsedBody();
 
+        $CurrentCorrector = $this->context->getCurrentCorrector();
+        $CurrentCorrectorKey = isset($CurrentCorrector) ? $CurrentCorrector->getKey() : '';
+
         foreach ($this->context->getCorrectionItems() as $item) {
             if ($item->getKey() == $args['key']) {
                 foreach ($this->context->getCorrectorsOfItem($item->getKey()) as $corrector) {
-                    if ($corrector->getKey() == $this->context->getUserKey()) {
-
+                    if ($corrector->getKey() == $CurrentCorrectorKey) {
                         $summary = new CorrectionSummary(
                             isset($data['text']) ? (string) $data['text'] : null,
                             isset($data['points']) ? (int) $data['points'] : null,
                             isset($data['grade_key']) ? (string) $data['grade_key'] : null
                         );
-                        $this->context->setCorrectionSummary($item->getKey(), $this->context->getUserKey(), $summary);
+                        $this->context->setCorrectionSummary($item->getKey(), $CurrentCorrectorKey, $summary);
                         $this->setNewDataToken();
                         return $this->setResponse(StatusCode::HTTP_OK);
                     }
