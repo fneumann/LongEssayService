@@ -130,7 +130,7 @@ class Rest extends Base\BaseRest
                         continue;
                     }
                     $summary = $this->context->getCorrectionSummary($item->getKey(), $corrector->getKey());
-                    $correctors[$corrector->getKey()] = [
+                    $correctors[] = [
                         'key' => $corrector->getKey(),
                         'title' => $corrector->getTitle(),
                         'text' => isset($summary) ? $summary->getText() : null,
@@ -147,7 +147,7 @@ class Rest extends Base\BaseRest
                         'ended' => isset($essay) ? $essay->getEditEnded() : null,
                         'authorized' => isset($essay) ? $essay->isAuthorized() : null
                     ],
-                    'correctors' => $correctors,        // indexed by corrector key
+                    'correctors' => $correctors,
                     'summary' => [
                         'text' => isset($summary) ? $summary->getText() : null,
                         'points' => isset($summary) ? $summary->getPoints() : null,
