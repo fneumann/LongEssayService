@@ -88,7 +88,8 @@ class Rest extends Base\BaseRest
             'settings' => [
                 'mutual_visibility' => $settings->hasMutualVisibility(),
                 'multi_color_highlight' => $settings->hasMultiColorHighlight(),
-                'max_points' => $settings->getMaxPoints()
+                'max_points' => $settings->getMaxPoints(),
+                'max_auto_distance' => $settings->getMaxAutoDistance()
             ],
             'resources' => $resources,
             'levels' => $levels,
@@ -130,13 +131,30 @@ class Rest extends Base\BaseRest
                         continue;
                     }
                     $summary = $this->context->getCorrectionSummary($item->getKey(), $corrector->getKey());
-                    $correctors[] = [
-                        'key' => $corrector->getKey(),
-                        'title' => $corrector->getTitle(),
-                        'text' => isset($summary) ? $summary->getText() : null,
-                        'points' => isset($summary) ? $summary->getPoints() : null,
-                        'grade_key' => isset($summary) ? $summary->getGradeKey() : null
-                    ];
+                    if (isset($summay) && $summary->isAuthorized()) {
+                        $correctors[] = [
+                            'key' => $corrector->getKey(),
+                            'title' => $corrector->getTitle(),
+                            'text' => $summary->getText(),
+                            'points' => $summary->getPoints(),
+                            'grade_key' => $summary->getGradeKey(),
+                            'last_change' => $summary->getLastChange(),
+                            'is_authorized' => $summary->isAuthorized(),
+                        ];
+                    }
+                    else {
+                        // don't provide date of other corrector if not yet authorized
+                        // but provide corrector to see the authorized status
+                        $correctors[] = [
+                            'key' => $corrector->getKey(),
+                            'title' => $corrector->getTitle(),
+                            'text' => null,
+                            'points' => null,
+                            'grade_key' => null,
+                            'last_change' => null,
+                            'is_authorized' => false
+                        ];
+                    }
                 }
                 $summary = $this->context->getCorrectionSummary($item->getKey(), $CurrentCorrectorKey);
 
@@ -151,7 +169,9 @@ class Rest extends Base\BaseRest
                     'summary' => [
                         'text' => isset($summary) ? $summary->getText() : null,
                         'points' => isset($summary) ? $summary->getPoints() : null,
-                        'grade_key' => isset($summary) ? $summary->getGradeKey() : null
+                        'grade_key' => isset($summary) ? $summary->getGradeKey() : null,
+                        'last_change' => isset($summary) ? $summary->getLastChange() : null,
+                        'is_authorized' => isset($summary) && $summary->isAuthorized()
                     ],
                 ];
 
@@ -189,7 +209,9 @@ class Rest extends Base\BaseRest
                         $summary = new CorrectionSummary(
                             isset($data['text']) ? (string) $data['text'] : null,
                             isset($data['points']) ? (int) $data['points'] : null,
-                            isset($data['grade_key']) ? (string) $data['grade_key'] : null
+                            isset($data['grade_key']) ? (string) $data['grade_key'] : null,
+                            isset($data['last_change']) ? (bool) $data['last_change'] : null,
+                            isset($data['is_authorized']) ? (bool) $data['is_authorized'] : null,
                         );
                         $this->context->setCorrectionSummary($item->getKey(), $CurrentCorrectorKey, $summary);
                         $this->setNewDataToken();
