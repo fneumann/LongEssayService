@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Corrector;
 use Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\DocuItem;
 
 /**
  * API of the LongEssayService for an LMS related to the correction of essays
@@ -58,5 +59,34 @@ class Service extends Base\BaseService
         $server->init($this->context, $this->dependencies);
         $server->run();
     }
+
+    /**
+     * Get a pdf from a corrected essay
+     */
+    public function getCorrectionAsPdf(DocuItem $item) : string
+    {
+        $task = $item->getWritingTask();
+        $essay = $item->getWrittenEssay();
+
+        $allHtml = $this->dependencies->html()->processWrittenTextForPdf((string) $essay->getWrittenText());
+        foreach ($item->getCorrectionSummaries() as $summary) {
+
+            $allHtml = $allHtml . '<br><hr><p></p>';
+
+            $allHtml .= "<b>Korrektor:</b> " . $summary->getCorrectorName() . '<br>';
+            $allHtml .= "<b>Korrigiert:</b> " . $summary->getLastChange() . '<br>';
+            $allHtml .= "<b>Vergebene Punkte:</b> " . $summary->getPoints() . '<br>';
+            $allHtml .= "<b>Kommentar:</b>" . $summary->getText();
+        };
+
+        return $this->dependencies->pdfGeneration()->generatePdfFromHtml(
+            $allHtml,
+            $this->context->getSystemName(),
+            $task->getWriterName(),
+            $task->getTitle(),
+            $task->getWriterName() . ' ' . $this->formatDates($essay->getEditStarted(), $essay->getEditEnded())
+        );
+    }
+
 
 }

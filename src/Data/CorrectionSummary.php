@@ -9,15 +9,28 @@ class CorrectionSummary
     protected $grade_key;
     protected $last_change;
     protected $is_authorized;
+    protected $corrector_name;
+    protected $grade_name;
 
+    public function __construct(
+        ?string $text,
+        ?int $points,
+        ?string $grade_key,
+        ?int $last_change,
+        ?bool $is_authorized = false,
 
-    public function __construct(?string $text, ?int $points, ?string $grade_key, ?int $last_change, ?bool $is_authorized = false)
+        // for documentation
+        ?string $corrector_name = '',
+        ?string $grade_title = ''
+    )
     {
         $this->text = $text;
         $this->points = $points;
         $this->grade_key = $grade_key;
         $this->last_change = $last_change;
         $this->is_authorized = $is_authorized;
+        $this->corrector_name = $corrector_name;
+        $this->grade_name = $grade_title;
     }
 
     /**
@@ -58,5 +71,13 @@ class CorrectionSummary
     public function isAuthorized(): bool
     {
         return $this->is_authorized;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCorrectorName(): ?string
+    {
+        return $this->corrector_name;
     }
 }
