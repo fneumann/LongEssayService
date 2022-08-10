@@ -12,6 +12,11 @@ class WrittenEssay
     protected $edit_ended;
     protected $is_authorized;
 
+    private ?int $correction_finalized;
+    private ?string $correction_finalized_by;
+    private ?float $final_points;
+    private ?string $final_grade;
+
 
     /**
      * Constructor (see getters)
@@ -22,14 +27,24 @@ class WrittenEssay
         ?string $processed_text,
         ?int $edit_started,
         ?int $edit_ended,
-        bool $is_authorized) {
+        bool $is_authorized,
 
+        // for documentation
+        ?int $correction_finalized = null,
+        ?string $correction_finalized_by = null,
+        ?float $final_points = null,
+        ?string $final_grade = null
+    ) {
         $this->written_text = $written_text;
         $this->written_hash = $written_hash;
         $this->processed_text = $processed_text;
         $this->edit_started = $edit_started;
         $this->edit_ended = $edit_ended;
         $this->is_authorized = $is_authorized;
+        $this->correction_finalized = $correction_finalized;
+        $this->correction_finalized_by = $correction_finalized_by;
+        $this->final_points = $final_points;
+        $this->final_grade = $final_grade;
     }
 
 
@@ -130,9 +145,78 @@ class WrittenEssay
     /**
      * apply the authorization status by the writing user
      */
-    public function withIsAuthorized(bool $is_authorized)
+    public function withIsAuthorized(bool $is_authorized) : self
     {
         $this->is_authorized = $is_authorized;
+        return $this;
+    }
+
+    /**
+     * Get the unix timestamp when the correction is finalized
+     */
+    public function getCorrectionFinalized(): ?int
+    {
+        return $this->correction_finalized;
+    }
+
+    /**
+     * Apply the unix timestamp when the correction is finalized
+     */
+    public function withCorrectionFinalized(?int $correction_finalized): WrittenEssay
+    {
+        $this->correction_finalized = $correction_finalized;
+        return $this;
+    }
+
+    /**
+     * Get the name of the person that finalized the correction
+     */
+    public function getCorrectionFinalizedBy(): ?string
+    {
+        return $this->correction_finalized_by;
+    }
+
+    /**
+     * Apply the name of the person that finalized the correction
+     */
+    public function withCorrectionFinalizedBy(?string $correction_finalized_by): WrittenEssay
+    {
+        $this->correction_finalized_by = $correction_finalized_by;
+        return $this;
+    }
+
+    /**
+     * Get the final given points
+     */
+    public function getFinalPoints(): ?float
+    {
+        return $this->final_points;
+    }
+
+    /**
+     * Apply the final given points
+     */
+    public function withFinalPoints(?float $final_points): WrittenEssay
+    {
+        $this->final_points = $final_points;
+        return $this;
+    }
+
+
+    /**
+     * Get the final grade level title
+     */
+    public function getFinalGrade(): ?string
+    {
+        return $this->final_grade;
+    }
+
+    /**
+     * Apply the final grade level title
+     */
+    public function withFinalGrade(?string $final_grade): WrittenEssay
+    {
+        $this->final_grade = $final_grade;
         return $this;
     }
 }

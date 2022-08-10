@@ -10,7 +10,7 @@ class CorrectionSummary
     protected $last_change;
     protected $is_authorized;
     protected $corrector_name;
-    protected $grade_name;
+    protected $grade_title;
 
     public function __construct(
         ?string $text,
@@ -30,7 +30,7 @@ class CorrectionSummary
         $this->last_change = $last_change;
         $this->is_authorized = $is_authorized;
         $this->corrector_name = $corrector_name;
-        $this->grade_name = $grade_title;
+        $this->grade_title = $grade_title;
     }
 
     /**
@@ -79,5 +79,13 @@ class CorrectionSummary
     public function getCorrectorName(): ?string
     {
         return $this->corrector_name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGradeTitle(): ?string
+    {
+        return $this->grade_title;
     }
 }

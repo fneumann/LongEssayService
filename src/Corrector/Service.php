@@ -68,14 +68,26 @@ class Service extends Base\BaseService
         $task = $item->getWritingTask();
         $essay = $item->getWrittenEssay();
 
-        $allHtml = $this->dependencies->html()->processWrittenTextForPdf((string) $essay->getWrittenText());
+        $allHtml = '';
+
+        if ($essay->getCorrectionFinalized()) {
+
+            $allHtml .= "<b>Korrektur beeendet:</b> " . $this->formatDates($essay->getCorrectionFinalized()) . '<br>';
+            $allHtml .= "<b>Korrektur beeendet durch:</b> " . $essay->getCorrectionFinalizedBy() . '<br>';
+            $allHtml .= "<b>Finale Punktzahl:</b> " . $essay->getFinalPoints() . '<br>';
+            $allHtml .= "<b>Finale Bewertung:</b> " . $essay->getFinalGrade() . '<br>';
+            $allHtml .= '<br><hr><p></p>';
+        }
+
+        $allHtml .= $this->dependencies->html()->processWrittenTextForPdf((string) $essay->getWrittenText());
+
         foreach ($item->getCorrectionSummaries() as $summary) {
 
             $allHtml = $allHtml . '<br><hr><p></p>';
-
             $allHtml .= "<b>Korrektor:</b> " . $summary->getCorrectorName() . '<br>';
-            $allHtml .= "<b>Korrigiert:</b> " . $summary->getLastChange() . '<br>';
+            $allHtml .= "<b>Korrigiert:</b> " . $this->formatDates($summary->getLastChange()) . '<br>';
             $allHtml .= "<b>Vergebene Punkte:</b> " . $summary->getPoints() . '<br>';
+            $allHtml .= "<b>Bewertung:</b> " . $summary->getGradeTitle() . '<br>';
             $allHtml .= "<b>Kommentar:</b>" . $summary->getText();
         };
 
