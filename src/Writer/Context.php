@@ -2,6 +2,7 @@
 
 namespace Edutiek\LongEssayService\Writer;
 use Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\Alert;
 use Edutiek\LongEssayService\Data\WritingSettings;
 use Edutiek\LongEssayService\Data\WritingStep;
 use Edutiek\LongEssayService\Data\WritingTask;
@@ -27,6 +28,12 @@ interface Context extends Base\BaseContext
      * The writing end will limit the time for writing
      */
     public function getWritingTask(): WritingTask;
+
+    /**
+     * Get Teh alerts to be shown to the writer
+     * @return Alert[]
+     */
+    public function getAlerts(): array;
 
     /**
      * Get the Essay that is written by the student

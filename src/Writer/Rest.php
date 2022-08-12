@@ -29,6 +29,7 @@ class Rest extends Base\BaseRest
     {
         parent::init($context, $dependencies);
         $this->get('/data', [$this,'getData']);
+        $this->get('/update', [$this,'getUpdate']);
         $this->get('/file/{key}', [$this,'getFile']);
         $this->put('/start', [$this,'putStart']);
         $this->put('/steps', [$this,'putSteps']);
@@ -96,6 +97,42 @@ class Rest extends Base\BaseRest
                 'steps' => $steps,
             ],
             'resources' => $resources,
+        ];
+
+        $this->setNewDataToken();
+        $this->setNewFileToken();
+        return $this->setResponse(StatusCode::HTTP_OK, $json);
+    }
+
+    /**
+     * GET the data for initializing the writer
+     */
+    public function getUpdate(Request $request, Response $response, array $args): Response
+    {
+        // common checks and initializations
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_DATA)) {
+            return $this->response;
+        }
+
+        $task = $this->context->getWritingTask();
+
+        $alerts = [];
+        foreach ($this->context->getAlerts() as $alert) {
+            $alerts[] = [
+                'message' => $alert->getMessage(),
+                'time' => $alert->getTime(),
+                'key' => $alert->getKey()
+            ];
+        }
+
+        $json = [
+            'task' => [
+                'title' => $task->getTitle(),
+                'instructions' => $task->getInstructions(),
+                'writer_name' => $task->getWriterName(),
+                'writing_end' => $task->getWritingEnd()
+            ],
+            'alerts' => $alerts
         ];
 
         $this->setNewDataToken();
