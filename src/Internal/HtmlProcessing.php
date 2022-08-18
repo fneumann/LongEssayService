@@ -12,8 +12,9 @@ class HtmlProcessing
     /**
      * Process the written text for display in the browser
      */
-    public function processWrittenTextForDisplay($html) : string
+    public function processWrittenTextForDisplay(?string $html) : string
     {
+        $html = $html ?? '';
         $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
         $html = $this->processXslt($html, __DIR__ . '/xsl/numbers_pdf.xsl');
 
@@ -23,8 +24,9 @@ class HtmlProcessing
     /**
      * Process the written text for PDF generation
      */
-    public function processWrittenTextForPdf($html) : string
+    public function processWrittenTextForPdf(?string $html) : string
     {
+        $html = $html ?? '';
         $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
         $html = $this->processXslt($html, __DIR__ . '/xsl/numbers_pdf.xsl');
 
