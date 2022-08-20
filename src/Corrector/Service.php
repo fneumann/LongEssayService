@@ -85,10 +85,15 @@ class Service extends Base\BaseService
 
             $allHtml = $allHtml . '<br><hr><p></p>';
             $allHtml .= "<b>Korrektor:</b> " . $summary->getCorrectorName() . '<br>';
-            $allHtml .= "<b>Korrigiert:</b> " . $this->formatDates($summary->getLastChange()) . '<br>';
-            $allHtml .= "<b>Vergebene Punkte:</b> " . $summary->getPoints() . '<br>';
-            $allHtml .= "<b>Bewertung:</b> " . $summary->getGradeTitle() . '<br>';
-            $allHtml .= "<b>Kommentar:</b>" . $summary->getText();
+            if ($summary->isAuthorized()) {
+                $allHtml .= "<b>Korrigiert:</b> " . $this->formatDates($summary->getLastChange()) . '<br>';
+                $allHtml .= "<b>Vergebene Punkte:</b> " . $summary->getPoints() . '<br>';
+                $allHtml .= "<b>Bewertung:</b> " . $summary->getGradeTitle() . '<br>';
+                $allHtml .= "<b>Kommentar:</b>" . $summary->getText();
+            }
+            else {
+                $allHtml .= '<b>Korrektur:</b >noch nicht abgeschlossen<br>';
+            } 
         };
 
         return $this->dependencies->pdfGeneration()->generatePdfFromHtml(

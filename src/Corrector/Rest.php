@@ -210,7 +210,7 @@ class Rest extends Base\BaseRest
                             isset($data['text']) ? (string) $data['text'] : null,
                             isset($data['points']) ? (int) $data['points'] : null,
                             isset($data['grade_key']) ? (string) $data['grade_key'] : null,
-                            isset($data['last_change']) ? (bool) $data['last_change'] : null,
+                            isset($data['last_change']) ? (int) $data['last_change'] : time(),
                             isset($data['is_authorized']) ? (bool) $data['is_authorized'] : null,
                         );
                         $this->context->setCorrectionSummary($item->getKey(), $CurrentCorrectorKey, $summary);
