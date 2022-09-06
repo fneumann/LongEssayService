@@ -131,7 +131,7 @@ class Rest extends Base\BaseRest
                         continue;
                     }
                     $summary = $this->context->getCorrectionSummary($item->getKey(), $corrector->getKey());
-                    if (isset($summay) && $summary->isAuthorized()) {
+                    if (isset($summary) && $summary->isAuthorized()) {
                         $correctors[] = [
                             'key' => $corrector->getKey(),
                             'title' => $corrector->getTitle(),
