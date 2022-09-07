@@ -83,7 +83,9 @@ class Rest extends Base\BaseRest
             'task' => [
                 'title' => $task->getTitle(),
                 'instructions' => $task->getInstructions(),
-                'correction_end' => $task->getCorrectionEnd()
+                'correction_end' => $task->getCorrectionEnd(),
+                'correction_allowed' => false,      // will be set when item is loaded
+                'authorization_allowed' => false    // will be set when item is loaded
             ],
             'settings' => [
                 'mutual_visibility' => $settings->hasMutualVisibility(),
@@ -156,9 +158,17 @@ class Rest extends Base\BaseRest
                         ];
                     }
                 }
+                $task = $this->context->getCorrectionTask();
                 $summary = $this->context->getCorrectionSummary($item->getKey(), $CurrentCorrectorKey);
 
                 $json = [
+                    'task' => [
+                        'title' => $task->getTitle(),
+                        'instructions' => $task->getInstructions(),
+                        'correction_end' => $task->getCorrectionEnd(),
+                        'correction_allowed' => $item->isCorrectionAllowed(),
+                        'authorization_allowed' => $item->isAuthorizationAllowed()
+                    ],
                     'essay' => [
                         'text'=> isset($essay) ? $essay->getProcessedText() : null,
                         'started' => isset($essay) ? $essay->getEditStarted() : null,

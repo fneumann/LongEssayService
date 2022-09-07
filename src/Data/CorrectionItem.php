@@ -4,15 +4,25 @@ namespace Edutiek\LongEssayService\Data;
 
 class CorrectionItem
 {
-    protected $key;
-    protected $title;
+    protected string $key;
+    protected string $title;
+    private bool $correction_allowed = false;
+    private bool $authorization_allowed = false;
+
 
     /**
      * Constructor
      */
-    public function __construct(string $key, string $title) {
+    public function __construct(
+        string $key,
+        string $title,
+        bool $correction_allowed = false,
+        bool $authorization_allowed = false
+    ) {
         $this->key = $key;
         $this->title = $title;
+        $this->correction_allowed = $correction_allowed;
+        $this->authorization_allowed = $authorization_allowed;
     }
 
     /**
@@ -31,5 +41,22 @@ class CorrectionItem
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isCorrectionAllowed(): bool
+    {
+        return $this->correction_allowed;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthorizationAllowed(): bool
+    {
+        return $this->authorization_allowed;
     }
 }
