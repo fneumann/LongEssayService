@@ -12,7 +12,7 @@ class CorrectionGradeLevel
     /**
      * Constructor (see getters)
      */
-    public function __construct(string $key, string $title, int $min_points)
+    public function __construct(string $key, string $title, float $min_points)
     {
         $this->key = $key;
         $this->title = $title;
@@ -38,7 +38,7 @@ class CorrectionGradeLevel
     /**
      * Get the minimum points that are needed to reach this level
      */
-    public function getMinPoints(): int
+    public function getMinPoints(): float
     {
         return $this->min_points;
     }

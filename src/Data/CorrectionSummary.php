@@ -14,7 +14,7 @@ class CorrectionSummary
 
     public function __construct(
         ?string $text,
-        ?int $points,
+        ?float $points,
         ?string $grade_key,
         ?int $last_change,
         ?bool $is_authorized = false,
@@ -44,7 +44,7 @@ class CorrectionSummary
     /**
      * Get the given points
      */
-    public function getPoints(): ?int
+    public function getPoints(): ?float
     {
         return $this->points;
     }
