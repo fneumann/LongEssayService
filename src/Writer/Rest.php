@@ -288,7 +288,7 @@ class Rest extends Base\BaseRest
         $this->context->setWrittenEssay($essay
             ->withWrittenText($currentText)
             ->withWrittenHash($currentHash)
-            ->withEditEnded($step ? $step->getTimestamp() : null)
+            ->withEditEnded(isset($step) ? $step->getTimestamp() : null)
             ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay($currentText))
         );
     }

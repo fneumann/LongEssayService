@@ -12,6 +12,8 @@ class WrittenEssay
     protected $edit_ended;
     protected $is_authorized;
 
+    private ?int $writing_authorized;
+    private ?string $writing_authorized_by;
     private ?int $correction_finalized;
     private ?string $correction_finalized_by;
     private ?float $final_points;
@@ -30,6 +32,8 @@ class WrittenEssay
         bool $is_authorized,
 
         // for documentation
+        ?int $writing_authorized = null,
+        ?string $writing_authorized_by = null,
         ?int $correction_finalized = null,
         ?string $correction_finalized_by = null,
         ?float $final_points = null,
@@ -41,6 +45,9 @@ class WrittenEssay
         $this->edit_started = $edit_started;
         $this->edit_ended = $edit_ended;
         $this->is_authorized = $is_authorized;
+
+        $this->writing_authorized = $writing_authorized;
+        $this->writing_authorized_by = $writing_authorized_by;
         $this->correction_finalized = $correction_finalized;
         $this->correction_finalized_by = $correction_finalized_by;
         $this->final_points = $final_points;
@@ -143,13 +150,52 @@ class WrittenEssay
     }
 
     /**
-     * apply the authorization status by the writing user
+     * Apply the authorization status by the writing user
      */
     public function withIsAuthorized(bool $is_authorized) : self
     {
         $this->is_authorized = $is_authorized;
         return $this;
     }
+
+
+    /**
+     * Get the unix timestamp when the writing is authorized
+     */
+    public function getWritingAuthorized(): ?int
+    {
+        return $this->writing_authorized;
+    }
+
+
+    /**
+     * Apply the unix timestamp when the writing is authorized
+     */
+    public function setWritingAuthorized(?int $writing_authorized): WrittenEssay
+    {
+        $this->writing_authorized = $writing_authorized;
+        return $this;
+    }
+
+
+
+    /**
+     * Get the name of the person that authorized the writing
+     */
+    public function getWritingAuthorizedBy(): ?string
+    {
+        return $this->writing_authorized_by;
+    }
+
+    /**
+     * Apply the name of the person that authorized the writing
+     */
+    public function setWritingAuthorizedBy(?string $writing_authorized_by): WrittenEssay
+    {
+        $this->writing_authorized_by = $writing_authorized_by;
+        return $this;
+    }
+
 
     /**
      * Get the unix timestamp when the correction is finalized

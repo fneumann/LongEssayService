@@ -71,30 +71,47 @@ class Service extends Base\BaseService
         $essay = $item->getWrittenEssay();
 
         $allHtml = '';
+        $allHtml .= "<b>Bearbeitung gestartet:</b> " . $this->formatDates($essay->getEditStarted()) . '<br>';
+        $allHtml .= "<b>Bearbeitung beeendet:</b> " . $this->formatDates($essay->getEditEnded()) . '<br>';
+        if ($essay->isAuthorized()) {
+            $allHtml .= "<b>Bearbeitung autorisiert:</b> " . $this->formatDates($essay->getWritingAuthorized()). '<br>';
+            $allHtml .= "<b>Bearbeitung autorisiert durch:</b> " . $essay->getWritingAuthorizedBy(). '<br>';
+        }
+        else {
+            $allHtml .= "<b>Bearbeitung autorisiert:</b> nicht autorisiert<br>";
+        }
 
         if ($essay->getCorrectionFinalized()) {
-
+            $allHtml .= '<br>';
             $allHtml .= "<b>Korrektur beeendet:</b> " . $this->formatDates($essay->getCorrectionFinalized()) . '<br>';
             $allHtml .= "<b>Korrektur beeendet durch:</b> " . $essay->getCorrectionFinalizedBy() . '<br>';
             $allHtml .= "<b>Finale Punktzahl:</b> " . $essay->getFinalPoints() . '<br>';
             $allHtml .= "<b>Finale Bewertung:</b> " . $essay->getFinalGrade() . '<br>';
-            $allHtml .= '<br><hr><p></p>';
+        }
+        else {
+            $allHtml .= "<b>Korrektur beeendet:</b> nicht beendet";
         }
 
+        $allHtml .= '<br><b>Abgegebener Text:</b>';
+        $allHtml .= '<hr>';
         $allHtml .= $this->dependencies->html()->processWrittenTextForPdf((string) $essay->getWrittenText());
 
         foreach ($item->getCorrectionSummaries() as $summary) {
-
-            $allHtml = $allHtml . '<br><hr><p></p>';
+            $allHtml .= '<hr><p></p>';
             $allHtml .= "<b>Korrektor:</b> " . $summary->getCorrectorName() . '<br>';
             if ($summary->isAuthorized()) {
                 $allHtml .= "<b>Korrigiert:</b> " . $this->formatDates($summary->getLastChange()) . '<br>';
                 $allHtml .= "<b>Vergebene Punkte:</b> " . $summary->getPoints() . '<br>';
                 $allHtml .= "<b>Bewertung:</b> " . $summary->getGradeTitle() . '<br>';
-                $allHtml .= "<b>Kommentar:</b>" . $summary->getText();
+                if (!empty($summary->getText())) {
+                    $allHtml .= "<b>Kommentar:</b>" . $summary->getText();
+                }
+                else {
+                    $allHtml .= "<b>Kommentar:</b> ohne Kommentar";
+                }
             }
             else {
-                $allHtml .= '<b>Korrektur:</b >noch nicht abgeschlossen<br>';
+                $allHtml .= '<b>Korrektur:</b> noch nicht abgeschlossen<br>';
             } 
         };
 
