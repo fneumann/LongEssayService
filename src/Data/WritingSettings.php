@@ -17,6 +17,8 @@ class WritingSettings
     protected $formatting_options;
     protected $notice_boards;
     protected $copy_allowed;
+    private string $primary_color;
+    private string $primary_text_color;
 
     /**
      * Constructor (see getters)
@@ -25,7 +27,10 @@ class WritingSettings
         string $headline_scheme,
         string $formatting_options,
         int $notice_boards,
-        bool $copy_allowed)
+        bool $copy_allowed,
+        string $primary_color,
+        string $primary_text_color
+    )
     {
         switch ($headline_scheme) {
             case self::HEADLINE_SCHEME_NONE:
@@ -56,6 +61,8 @@ class WritingSettings
         }
 
         $this->copy_allowed = $copy_allowed;
+        $this->primary_color = $primary_color;
+        $this->primary_text_color = $primary_text_color;
     }
 
     /**
@@ -96,6 +103,22 @@ class WritingSettings
     public function isCopyAllowed() : bool
     {
         return $this->copy_allowed;
+    }
+
+    /**
+     * Get the color for the background of primary actions
+     */
+    public function getPrimaryColor(): string
+    {
+        return $this->primary_color;
+    }
+
+    /**
+     * Get the color for the text of primary actions
+     */
+    public function getPrimaryTextColor(): string
+    {
+        return $this->primary_text_color;
     }
 
 }

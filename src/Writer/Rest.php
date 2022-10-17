@@ -81,7 +81,9 @@ class Rest extends Base\BaseRest
                 'headline_scheme' => $settings->getHeadlineScheme(),
                 'formatting_options' => $settings->getFormattingOptions(),
                 'notice_boards' => $settings->getNoticeBoards(),
-                'copy_allowed' => $settings->isCopyAllowed()
+                'copy_allowed' => $settings->isCopyAllowed(),
+                'primary_color' => $settings->getPrimaryColor(),
+                'primary_text_color' => $settings->getPrimaryTextColor()
             ],
             'task' => [
                 'title' => $task->getTitle(),
