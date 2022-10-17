@@ -38,6 +38,8 @@ class Service extends Base\BaseService
         if (!empty($item = $this->context->getCurrentItem())) {
             $this->setFrontendParam('Item', $item->getKey());
         }
+        $this->setFrontendParam('IsReview', $this->context->isReview() ? '1' : '0');
+        $this->setFrontendParam('IsStitchDecision', $this->context->isStitchDecision() ? '1' : '0');
     }
 
 
@@ -104,6 +106,4 @@ class Service extends Base\BaseService
             $task->getWriterName() . ' ' . $this->formatDates($essay->getEditStarted(), $essay->getEditEnded())
         );
     }
-
-
 }

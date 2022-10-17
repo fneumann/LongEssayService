@@ -85,20 +85,8 @@ abstract class BaseRest extends App
             $this->context->init($user_key, $env_key);
         }
         catch (ContextException $e) {
-            switch ($e->getCode()) {
-                case ContextException::USER_NOT_VALID:
-                    $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, $e->getMessage());
-                    return false;
-                case ContextException::ENVIRONMENT_NOT_VALID:
-                    $this->setResponse(StatusCode::HTTP_BAD_REQUEST, $e->getMessage());
-                    return false;
-                case ContextException::PERMISSION_DENIED:
-                    $this->setResponse(StatusCode::HTTP_FORBIDDEN, $e->getMessage());
-                    return false;
-                default:
-                    $this->setResponse(StatusCode::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
-                    return false;
-            }
+            $this->setResponseForContextException($e);
+            return false;
         }
         catch (\Throwable $t) {
             $this->setResponse(StatusCode::HTTP_BAD_REQUEST, $t->getMessage());
@@ -161,6 +149,26 @@ abstract class BaseRest extends App
             ->withHeader('LongEssayTime', (string) time())
             ->withStatus($status)
             ->withJson($json);
+    }
+
+    /**
+     * Set the response according to a context exception
+     */
+    protected function setResponseForContextException(ContextException $e) : Response
+    {
+        switch ($e->getCode()) {
+            case ContextException::USER_NOT_VALID:
+                return $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, $e->getMessage());
+
+            case ContextException::ENVIRONMENT_NOT_VALID:
+                return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, $e->getMessage());
+
+            case ContextException::PERMISSION_DENIED:
+                return $this->setResponse(StatusCode::HTTP_FORBIDDEN, $e->getMessage());
+
+            default:
+                return $this->setResponse(StatusCode::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
     }
 
 

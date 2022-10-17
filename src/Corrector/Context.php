@@ -10,10 +10,11 @@ use Edutiek\LongEssayService\Data\Corrector;
 use Edutiek\LongEssayService\Data\CorrectionGradeLevel;
 use Edutiek\LongEssayService\Data\EnvResource;
 use Edutiek\LongEssayService\Data\WrittenEssay;
+use Edutiek\LongEssayService\Exceptions\ContextException;
 
 /**
- * Required interface of a context application (e.g. an LMS) calling the writer service
- * A class implementing this interface must be provided in the constructor of the writer service
+ * Required interface of a context application (e.g. an LMS) calling the corrector service
+ * A class implementing this interface must be provided in the constructor of the corrector service
  *
  * @package Edutiek\LongEssayService\Corrector
  */
@@ -49,7 +50,7 @@ interface Context extends Base\BaseContext
     /**
      * Get the current corrector
      * This corrector represents the current user
-     * If the current user is no corrector, return null
+     * If the current user is no corrector (e.g. for review decision or stitch decision), return null
      */
     public function getCurrentCorrector(): ?Corrector;
 
@@ -86,4 +87,36 @@ interface Context extends Base\BaseContext
      */
     public function setCorrectionSummary(string $item_key, string $corrector_key, CorrectionSummary $summary) : void;
 
+
+    /**
+     * Save a stitch decision
+     */
+    public function saveStitchDecision(string $item_key, int $timestamp, ?float $points, ?string $grade_key) : bool;
+
+
+    /**
+     * Set the review mode for the corrector
+     * This must be called after init()
+     * @throws ContextException if user is not allowed to review corrections
+     */
+    public function setReview(bool $is_review);
+
+
+    /**
+     * Get if the corrector should be opened for review of all correctors
+     */
+    public function isReview() : bool;
+
+
+    /**
+     * Set the stitch decision mode for the corrector
+     * @throws ContextException if user is not allowed to draw stitch decisions
+     */
+    public function setStitchDecision(bool $is_stitch_decision);
+
+
+    /**
+     * Get if the corrector should be opened for a stitch decision
+     */
+    public function isStitchDecision() : bool;
 }

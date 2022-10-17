@@ -5,6 +5,7 @@ namespace Edutiek\LongEssayService\Corrector;
 use Edutiek\LongEssayService\Base;
 use Edutiek\LongEssayService\Base\BaseContext;
 use Edutiek\LongEssayService\Data\CorrectionSummary;
+use Edutiek\LongEssayService\Exceptions\ContextException;
 use Edutiek\LongEssayService\Internal\Authentication;
 use Edutiek\LongEssayService\Internal\Dependencies;
 use Slim\Http\Request;
@@ -32,8 +33,28 @@ class Rest extends Base\BaseRest
         $this->get('/item/{key}', [$this,'getItem']);
         $this->get('/file/{key}', [$this,'getFile']);
         $this->put('/summary/{key}', [$this, 'putSummary']);
+        $this->put('/stitch/{key}', [$this, 'putStitchDecision']);
     }
 
+    /**
+     * @inheritDoc
+     * here: set mode for review or stitch decision
+     */
+    protected function prepare(Request $request, Response $response, array $args, string $purpose): bool
+    {
+        if (parent::prepare($request, $response, $args, $purpose)) {
+            try {
+                $this->context->setReview((bool) $this->params['LongEssayIsReview']);
+                $this->context->setStitchDecision((bool) $this->params['LongEssayIsStitchDecision']);
+                return true;
+            }
+            catch (ContextException $e) {
+                $this->setResponseForContextException($e);
+                return false;
+            }
+        }
+        return false;
+    }
 
     /**
      * GET the data for the correction task
@@ -232,6 +253,34 @@ class Rest extends Base\BaseRest
             }
         }
         return $this->setResponse(StatusCode::HTTP_NOT_FOUND, 'item not found');
+    }
+
+
+    /**
+     * PUT the summary of a correction item
+     * @param Request  $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     */
+    public function putStitchDecision(Request $request, Response $response, array $args): Response
+    {
+        // common checks and initializations
+        if (!$this->prepare($request, $response, $args, Authentication::PURPOSE_DATA)) {
+            return $this->response;
+        }
+        $data = $this->request->getParsedBody();
+
+        if ($this->context->saveStitchDecision(
+            (string) $args['key'],
+            (int) $data['correction_finalized'],
+            $data['final_points'] ? (float) $data['final_points'] : null,
+            $data['grade_key'] ? (string) $data['grade_key'] : null
+            )) {
+            $this->setNewDataToken();
+            return $this->setResponse(StatusCode::HTTP_OK);
+        }
+        return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'not saved');
     }
 
 }
