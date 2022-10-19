@@ -87,7 +87,7 @@ abstract class BaseService
                 'expires' => time() + 60,
                 'path' => '/',
                 'domain' => '',
-                'secure' => true,
+                'secure' => (isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS'])) ? true : false,
                 'httponly' => false,
                 'sameSite' => 'Strict' // None, Lax, Strict
             ]
