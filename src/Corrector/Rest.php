@@ -274,8 +274,9 @@ class Rest extends Base\BaseRest
         if ($this->context->saveStitchDecision(
             (string) $args['key'],
             (int) $data['correction_finalized'],
-            $data['final_points'] ? (float) $data['final_points'] : null,
-            $data['grade_key'] ? (string) $data['grade_key'] : null
+            isset($data['final_points']) ? (float) $data['final_points'] : null,
+            !empty($data['grade_key']) ? (string) $data['grade_key'] : null,
+            !empty($data['stitch_comment']) ? (string) $data['stitch_comment'] : null
             )) {
             $this->setNewDataToken();
             return $this->setResponse(StatusCode::HTTP_OK);

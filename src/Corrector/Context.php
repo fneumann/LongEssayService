@@ -91,7 +91,7 @@ interface Context extends Base\BaseContext
     /**
      * Save a stitch decision
      */
-    public function saveStitchDecision(string $item_key, int $timestamp, ?float $points, ?string $grade_key) : bool;
+    public function saveStitchDecision(string $item_key, int $timestamp, ?float $points, ?string $grade_key, ?string $stitch_comment) : bool;
 
 
     /**

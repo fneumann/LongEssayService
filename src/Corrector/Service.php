@@ -87,6 +87,9 @@ class Service extends Base\BaseService
             $allHtml .= "<b>Korrektur beeendet durch:</b> " . $essay->getCorrectionFinalizedBy() . '<br>';
             $allHtml .= "<b>Finale Punktzahl:</b> " . $essay->getFinalPoints() . '<br>';
             $allHtml .= "<b>Finale Bewertung:</b> " . $essay->getFinalGrade() . '<br>';
+            if (!empty($essay->getStitchComment())) {
+                $allHtml .= "<b>Stichentscheid mit Begründung:</b><br> " . $essay->getStitchComment() . '<br>';
+            }
         }
         else {
             $allHtml .= "<b>Korrektur beeendet:</b> nicht beendet";

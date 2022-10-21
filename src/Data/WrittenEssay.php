@@ -18,6 +18,7 @@ class WrittenEssay
     private ?string $correction_finalized_by;
     private ?float $final_points;
     private ?string $final_grade;
+    private ?string $stitch_comment;
 
 
     /**
@@ -37,7 +38,8 @@ class WrittenEssay
         ?int $correction_finalized = null,
         ?string $correction_finalized_by = null,
         ?float $final_points = null,
-        ?string $final_grade = null
+        ?string $final_grade = null,
+        ?string $stitch_comment = null
     ) {
         $this->written_text = $written_text;
         $this->written_hash = $written_hash;
@@ -52,6 +54,7 @@ class WrittenEssay
         $this->correction_finalized_by = $correction_finalized_by;
         $this->final_points = $final_points;
         $this->final_grade = $final_grade;
+        $this->stitch_comment = $stitch_comment;
     }
 
 
@@ -263,6 +266,24 @@ class WrittenEssay
     public function withFinalGrade(?string $final_grade): WrittenEssay
     {
         $this->final_grade = $final_grade;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStitchComment(): ?string
+    {
+        return $this->stitch_comment;
+    }
+
+    /**
+     * @param string|null $stitch_comment
+     * @return WrittenEssay
+     */
+    public function withStitchComment(?string $stitch_comment): WrittenEssay
+    {
+        $this->stitch_comment = $stitch_comment;
         return $this;
     }
 }
