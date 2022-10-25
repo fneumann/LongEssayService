@@ -107,7 +107,7 @@ class Rest extends Base\BaseRest
     }
 
     /**
-     * GET the data for initializing the writer
+     * GET the data for updating the writer
      */
     public function getUpdate(Request $request, Response $response, array $args): Response
     {
@@ -138,7 +138,7 @@ class Rest extends Base\BaseRest
         ];
 
         $this->setNewDataToken();
-        $this->setNewFileToken();
+        // don't set a new file token - it should not expire
         return $this->setResponse(StatusCode::HTTP_OK, $json);
     }
 
