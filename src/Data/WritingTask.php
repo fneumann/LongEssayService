@@ -11,16 +11,18 @@ class WritingTask
     protected $writer_name;
     protected $instructions;
     protected $writing_end;
+    protected $writing_excluded;
 
     /**
      * Constructor (see getters)
      */
-    public function __construct(string $title, string $instructions, ?string $writer_name, ?int $writing_end)
+    public function __construct(string $title, string $instructions, ?string $writer_name, ?int $writing_end, ?int $writing_excluded)
     {
         $this->title = $title;
         $this->instructions = $instructions;
         $this->writer_name = $writer_name;
         $this->writing_end = $writing_end;
+        $this->writing_excluded = $writing_excluded;
     }
 
     /**
@@ -52,5 +54,14 @@ class WritingTask
     public function getWritingEnd(): ?int
     {
         return $this->writing_end;
+    }
+
+    /**
+     * Unix timestamp for the exclusion from writing
+     * If set, no input will be accepted
+     */
+    public function getWritingExcluded(): ?int
+    {
+        return $this->writing_excluded;
     }
 }

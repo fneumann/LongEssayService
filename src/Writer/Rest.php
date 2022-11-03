@@ -132,7 +132,8 @@ class Rest extends Base\BaseRest
                 'title' => $task->getTitle(),
                 'instructions' => $task->getInstructions(),
                 'writer_name' => $task->getWriterName(),
-                'writing_end' => $task->getWritingEnd()
+                'writing_end' => $task->getWritingEnd(),
+                'writing_excluded' => $task->getWritingExcluded()
             ],
             'alerts' => $alerts
         ];

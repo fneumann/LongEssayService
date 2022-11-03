@@ -73,6 +73,9 @@ class Service extends Base\BaseService
         $allHtml = '';
         $allHtml .= "<b>Bearbeitung gestartet:</b> " . $this->formatDates($essay->getEditStarted()) . '<br>';
         $allHtml .= "<b>Bearbeitung beeendet:</b> " . $this->formatDates($essay->getEditEnded()) . '<br>';
+        if (!empty($task->getWritingExcluded())) {
+            $allHtml .= "<b>Von Bearbeitung ausgeschlossen:</b> " . $this->formatDates($task->getWritingExcluded()) . '<br>';
+        }
         if ($essay->isAuthorized()) {
             $allHtml .= "<b>Bearbeitung autorisiert:</b> " . $this->formatDates($essay->getWritingAuthorized()). '<br>';
             $allHtml .= "<b>Bearbeitung autorisiert durch:</b> " . $essay->getWritingAuthorizedBy(). '<br>';
