@@ -1,7 +1,9 @@
 <?php
 
 namespace Edutiek\LongEssayService\Writer;
+use DiffMatchPatch\DiffMatchPatch;
 use Edutiek\LongEssayService\Base;
+use Edutiek\LongEssayService\Data\WritingStep;
 
 /**
  * API of the LongEssayService for an LMS related to the writing of essays
@@ -88,5 +90,37 @@ class Service extends Base\BaseService
             $task->getTitle(),
             $task->getWriterName() . ' ' . $this->formatDates($essay->getEditStarted(), $essay->getEditEnded())
         );
+    }
+
+
+
+    /**
+     * Get the HTML diff of a writing step applied to a text
+     */
+    public function getWritingDiffHtml(string $before, WritingStep $step) : string
+    {
+        $after = $this->getWritingDiffResult($before, $step);
+        $dmp = new DiffMatchPatch();
+        $diffs = $dmp->diff_main($before, $after);
+        $dmp->diff_cleanupEfficiency($diffs);
+        return $dmp->diff_prettyHtml($diffs);
+    }
+
+    /**
+     * Get the result of a writing step
+     */
+    public function getWritingDiffResult(string $before, WritingStep  $step) : string
+    {
+        $dmp = new DiffMatchPatch();
+        if ($step->isDelta()) {
+            $patches = $dmp->patch_fromText($step->getContent());
+            $result = $dmp->patch_apply($patches, $before);
+            $after = $result[0];
+        }
+        else {
+            $after = $step->getContent();
+        }
+
+        return $after;
     }
 }
