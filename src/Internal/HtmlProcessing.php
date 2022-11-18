@@ -42,25 +42,30 @@ class HtmlProcessing
      */
     protected function processXslt(string $html, string $xslt_file) : string
     {
-        // get the xslt document
-        // set the URI to allow document() within the XSL file
-        $xslt_doc = new \DOMDocument('1.0', 'UTF-8');
-        $xslt_doc->loadXML(file_get_contents($xslt_file));
-        $xslt_doc->documentURI = $xslt_file;
+        try {
+            // get the xslt document
+            // set the URI to allow document() within the XSL file
+            $xslt_doc = new \DOMDocument('1.0', 'UTF-8');
+            $xslt_doc->loadXML(file_get_contents($xslt_file));
+            $xslt_doc->documentURI = $xslt_file;
 
-        // get the xslt processor
-        $xslt = new \XSLTProcessor();
-        $xslt->registerPhpFunctions();
-        $xslt->importStyleSheet($xslt_doc);
+            // get the xslt processor
+            $xslt = new \XSLTProcessor();
+            $xslt->registerPhpFunctions();
+            $xslt->importStyleSheet($xslt_doc);
 
-        // get the html document
-        $dom_doc = new \DOMDocument('1.0', 'UTF-8');
-        $dom_doc->loadHTML('<?xml encoding="UTF-8"?'.'>'. $html);
+            // get the html document
+            $dom_doc = new \DOMDocument('1.0', 'UTF-8');
+            $dom_doc->loadHTML('<?xml encoding="UTF-8"?'.'>'. $html);
 
-        $xml = $xslt->transformToXml($dom_doc);
-        $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $xml);
+            $xml = $xslt->transformToXml($dom_doc);
+            $xml = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $xml);
 
-        return $xml;
+            return $xml;
+        }
+        catch (\Throwable $e) {
+            return 'HTML PROCESSING ERROR:<br>' . $e->getMessage() . '<hr>' . $html;
+        }
     }
 
 

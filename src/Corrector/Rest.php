@@ -147,6 +147,16 @@ class Rest extends Base\BaseRest
             if ($item->getKey() == $args['key']) {
 
                 $essay = $this->context->getEssayOfItem($item->getKey());
+                // update the processed text if needed
+                // after authorization the written text will not change
+                if (!empty($essay) && (empty($essay->getProcessedText()) || !$essay->isAuthorized())) {
+                    $processed = $this->dependencies->html()->processWrittenTextForDisplay($essay->getWrittenText());
+                    if ($processed != $essay->getProcessedText()) {
+                        $this->context->setProcessedText($item->getKey(), $processed);
+                        $essay = $essay->withProcessedText($processed);
+                    }
+                }
+
                 $correctors = [];
                 foreach ($this->context->getCorrectorsOfItem($item->getKey()) as $corrector) {
                     // add only other correctors

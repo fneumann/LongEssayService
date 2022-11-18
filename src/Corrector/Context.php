@@ -83,6 +83,12 @@ interface Context extends Base\BaseContext
 
 
     /**
+     * Set the text of the written essay that is processed for display in the corrector (e.g. line numbers added)
+     */
+    public function setProcessedText(string $item_key, ?string $text) : void;
+
+
+    /**
      * Set the correction summary given by a corrector for a correction item
      */
     public function setCorrectionSummary(string $item_key, string $corrector_key, CorrectionSummary $summary) : void;

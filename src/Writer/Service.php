@@ -60,20 +60,6 @@ class Service extends Base\BaseService
         $server->run();
     }
 
-    /**
-     * Process the written text for being used in the corrector
-     * - Cleanup unsupported html
-     * - Add paragraph numbering
-     */
-    public function processWrittenText()
-    {
-        $essay = $this->context->getWrittenEssay();
-        if (!empty($essay->getWrittenText())) {
-            $this->context->setWrittenEssay(
-                $essay->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay((string) $essay->getWrittenText()))
-            );
-        }
-    }
 
     /**
      * Get a pdf from the text that has been processed for the corrector

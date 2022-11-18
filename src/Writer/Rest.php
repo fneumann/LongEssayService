@@ -226,7 +226,7 @@ class Rest extends Base\BaseRest
         $this->context->setWrittenEssay($essay
             ->withWrittenText((string) $data['content'])
             ->withWrittenHash((string) $data['hash'])
-            ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay((string) $data['content']))
+            ->withProcessedText(null) // processing may cause html parsing errors, do not at saving
             ->withIsAuthorized((bool) $data['authorized'])
         );
 
@@ -292,7 +292,7 @@ class Rest extends Base\BaseRest
             ->withWrittenText($currentText)
             ->withWrittenHash($currentHash)
             ->withEditEnded(isset($step) ? $step->getTimestamp() : null)
-            ->withProcessedText($this->dependencies->html()->processWrittenTextForDisplay($currentText))
+            ->withProcessedText(null) // processing may cause html parsing errors, do not at saving
         );
     }
 }
