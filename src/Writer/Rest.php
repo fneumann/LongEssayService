@@ -198,6 +198,9 @@ class Rest extends Base\BaseRest
 
     /**
      * PUT the final content
+     * "final" means that the writer is intentionally closed
+     * That could be an interruption or the authorized submission
+     * the content is only saved when the essay is not yet authorized
      */
     public function putFinal(Request $request, Response $response, array $args): Response
     {
@@ -221,15 +224,15 @@ class Rest extends Base\BaseRest
         }
 
         $essay = $this->context->getWrittenEssay();
-        $this->saveWritingSteps($essay, $data['steps']);
-
-        $this->context->setWrittenEssay($essay
-            ->withWrittenText((string) $data['content'])
-            ->withWrittenHash((string) $data['hash'])
-            ->withProcessedText(null) // processing may cause html parsing errors, do not at saving
-            ->withIsAuthorized((bool) $data['authorized'])
-        );
-
+        if (!$essay->isAuthorized()) {
+            $this->saveWritingSteps($essay, $data['steps']);
+            $this->context->setWrittenEssay($essay
+                ->withWrittenText((string) $data['content'])
+                ->withWrittenHash((string) $data['hash'])
+                ->withProcessedText(null) // processing may cause html parsing errors, do not at saving
+                ->withIsAuthorized((bool) $data['authorized'])
+            );
+        }
 
         $this->setNewDataToken();
         return $this->setResponse(StatusCode::HTTP_OK);
