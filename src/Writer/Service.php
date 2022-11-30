@@ -70,7 +70,7 @@ class Service extends Base\BaseService
         $essay = $this->context->getWrittenEssay();
 
         return $this->dependencies->pdfGeneration()->generatePdfFromHtml(
-            $this->dependencies->html()->processWrittenTextForPdf($essay->getWrittenText()),
+            $this->dependencies->html()->processWrittenText($essay->getWrittenText()),
             $this->context->getSystemName(),
             $task->getWriterName(),
             $task->getTitle(),

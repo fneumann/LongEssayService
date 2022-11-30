@@ -100,7 +100,7 @@ class Service extends Base\BaseService
 
         $allHtml .= '<br><b>Abgegebener Text:</b>';
         $allHtml .= '<hr>';
-        $allHtml .= $this->dependencies->html()->processWrittenTextForPdf((string) $essay->getWrittenText());
+        $allHtml .= $this->dependencies->html()->processWrittenText((string) $essay->getWrittenText());
 
         foreach ($item->getCorrectionSummaries() as $summary) {
             $allHtml .= '<hr><p></p>';

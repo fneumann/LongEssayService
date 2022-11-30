@@ -10,21 +10,9 @@ class HtmlProcessing
     static $counter = 1;
 
     /**
-     * Process the written text for display in the browser
+     * Process the written text
      */
-    public function processWrittenTextForDisplay(?string $html) : string
-    {
-        $html = $html ?? '';
-        $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');
-        $html = $this->processXslt($html, __DIR__ . '/xsl/numbers_pdf.xsl');
-
-        return $html;
-    }
-
-    /**
-     * Process the written text for PDF generation
-     */
-    public function processWrittenTextForPdf(?string $html) : string
+    public function processWrittenText(?string $html) : string
     {
         $html = $html ?? '';
         $html = $this->processXslt($html, __DIR__ . '/xsl/cleanup.xsl');

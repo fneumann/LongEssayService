@@ -14,16 +14,15 @@
     </xsl:template>
 
     <xsl:template match="body">
-        <table>
+        <table cellspacing="10">
             <xsl:apply-templates select="node()" />
         </table>
     </xsl:template>
 
-
     <!--  Add numbers to the paragraph like elements -->
-    <xsl:template match="h1|h2|h3|h4|h5|h6|p|ul|ol">
+    <xsl:template match="body/h1|body/h2|body/h3|body/h4|body/h5|body/h6|body/p|body/ul|body/ol">
         <xsl:variable name="counter" select="php:function('Edutiek\LongEssayService\Internal\HtmlProcessing::nextCounter')" />
-        <tr>
+        <tr style="vertical-align:top;">
             <td width="10%">
                 <xsl:value-of select="$counter" />
              </td>
