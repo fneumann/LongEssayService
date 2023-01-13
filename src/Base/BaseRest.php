@@ -161,10 +161,13 @@ abstract class BaseRest extends App
                 return $this->setResponse(StatusCode::HTTP_UNAUTHORIZED, $e->getMessage());
 
             case ContextException::ENVIRONMENT_NOT_VALID:
-                return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, $e->getMessage());
+                return $this->setResponse(StatusCode::HTTP_NOT_FOUND, $e->getMessage());
 
             case ContextException::PERMISSION_DENIED:
                 return $this->setResponse(StatusCode::HTTP_FORBIDDEN, $e->getMessage());
+
+            case ContextException::SERVICE_UNAVAILABLE:
+                return $this->setResponse(StatusCode::HTTP_SERVICE_UNAVAILABLE, $e->getMessage());
 
             default:
                 return $this->setResponse(StatusCode::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
