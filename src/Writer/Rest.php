@@ -169,6 +169,7 @@ class Rest extends Base\BaseRest
         $this->context->setWrittenEssay($essay);
 
         $this->setNewDataToken();
+        $this->context->setAlive();
         return $this->setResponse(StatusCode::HTTP_OK);
     }
 
@@ -192,6 +193,7 @@ class Rest extends Base\BaseRest
         $this->saveWritingSteps($essay, $data['steps']);
 
         $this->setNewDataToken();
+        $this->context->setAlive();
         return $this->setResponse(StatusCode::HTTP_OK);
     }
 
@@ -235,6 +237,7 @@ class Rest extends Base\BaseRest
         }
 
         $this->setNewDataToken();
+        $this->context->setAlive();
         return $this->setResponse(StatusCode::HTTP_OK);
     }
 

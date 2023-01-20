@@ -256,6 +256,7 @@ class Rest extends Base\BaseRest
                         );
                         $this->context->setCorrectionSummary($item->getKey(), $CurrentCorrectorKey, $summary);
                         $this->setNewDataToken();
+                        $this->context->setAlive();
                         return $this->setResponse(StatusCode::HTTP_OK);
                     }
                 }
@@ -289,6 +290,7 @@ class Rest extends Base\BaseRest
             !empty($data['stitch_comment']) ? (string) $data['stitch_comment'] : null
             )) {
             $this->setNewDataToken();
+            $this->context->setAlive();
             return $this->setResponse(StatusCode::HTTP_OK);
         }
         return $this->setResponse(StatusCode::HTTP_BAD_REQUEST, 'not saved');

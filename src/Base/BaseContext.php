@@ -105,6 +105,18 @@ interface BaseContext
 
 
     /**
+     * Extend the session of an authenticated user
+     * This is called when the web apps makes rest calls that indicate an activity (e.g. writing)
+     * The system should then extend the user's session, if a session is open
+     *
+     * Note:
+     * The REST interface does not need an extension, because it works with separate Api Tokens
+     * But if a user returns from the web app to the system, the session may otherwise be expired
+     */
+    public function setAlive() : void;
+
+
+    /**
      * Get the resources that should be available in the app
      * @return EnvResource[]
      */
