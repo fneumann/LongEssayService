@@ -42,9 +42,10 @@ interface Context extends Base\BaseContext
     /**
      * Get the items that are assigned to the current user for correction
      * These items can be stepped through in the corrector app
+     * @param bool $use_filter    apply a filter set by the user
      * @return CorrectionItem[]
      */
-    public function getCorrectionItems(): array;
+    public function getCorrectionItems(bool $use_filter = false): array;
 
 
     /**

@@ -93,7 +93,7 @@ class Rest extends Base\BaseRest
             ];
         }
         $items = [];
-        foreach ($this->context->getCorrectionItems() as $item) {
+        foreach ($this->context->getCorrectionItems(true) as $item) {
             $items[] = [
                 'key' => $item->getKey(),
                 'title' => $item->getTitle()
