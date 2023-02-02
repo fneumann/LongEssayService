@@ -112,7 +112,9 @@ class Rest extends Base\BaseRest
                 'mutual_visibility' => $settings->hasMutualVisibility(),
                 'multi_color_highlight' => $settings->hasMultiColorHighlight(),
                 'max_points' => $settings->getMaxPoints(),
-                'max_auto_distance' => $settings->getMaxAutoDistance()
+                'max_auto_distance' => $settings->getMaxAutoDistance(),
+                'stitch_when_distance' => $settings->getStitchWhenDistance(),
+                'stitch_when_decimals' => $settings->getStitchWhenDecimals()
             ],
             'resources' => $resources,
             'levels' => $levels,
