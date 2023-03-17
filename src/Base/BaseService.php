@@ -55,6 +55,7 @@ abstract class BaseService
         //$this->redirectByHtml($this->context->getFrontendUrl());
 
         header('Location: ' . $this->context->getFrontendUrl());
+        exit;
     }
 
     /**
