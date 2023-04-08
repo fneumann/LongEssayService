@@ -17,7 +17,7 @@ class Authentication
 
             case self::PURPOSE_DATA:
             default:
-                return time() + 3600;       // one hour, will be extended with each polling request
+                return time() + 86400;       // 24 hours, will be extended with each polling request
         }
     }
 
