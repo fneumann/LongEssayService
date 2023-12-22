@@ -1,6 +1,6 @@
 # LongEssayService (Pre-Test Version)
 
-This repository is no longer maintained. Please use the [EDUTIEK](https://github.com/EDUTIEK) repository instead.
+This repository is no longer maintained. Please use the [EDUTIEK](https://github.com/EDUTIEK/long-essay-assessment-service) repository instead.
 
 This service can be integrated by PHP based systems to use two javascript applications which provide user interfaces 
 for the writing and correction of long text-based exams:
